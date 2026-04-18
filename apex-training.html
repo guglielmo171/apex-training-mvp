@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APEX Training — MVP Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        lime: '#C8FF00',
+        s0: '#080808', s1: '#0f0f0f', s2: '#1a1a1a', s3: '#242424', s4: '#2e2e2e',
+      },
+      fontFamily: { sans: ['Inter', 'sans-serif'] }
+    }
+  }
+}
+</script>
+<style>
+*, *::before, *::after { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+
+body {
+  margin: 0;
+  background: #090909;
+  background-image:
+    radial-gradient(ellipse at 15% 50%, rgba(200,255,0,0.025) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 20%, rgba(59,130,246,0.025) 0%, transparent 55%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  padding: 40px 20px;
+}
+
+.desktop-hint {
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,0.18);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  font-family: 'Inter', sans-serif;
+}
+
+.phone-shell {
+  width: 393px;
+  height: 852px;
+  background: linear-gradient(170deg, #2a2a2a 0%, #1a1a1a 100%);
+  border-radius: 56px;
+  padding: 11px;
+  position: relative;
+  flex-shrink: 0;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.10),
+    0 0 0 1.5px rgba(0,0,0,0.95),
+    0 60px 140px rgba(0,0,0,0.85),
+    0 0 100px rgba(200,255,0,0.035),
+    inset 0 1px 0 rgba(255,255,255,0.07);
+}
+
+/* Volume + power buttons */
+.phone-shell::before {
+  content: '';
+  position: absolute;
+  left: -3.5px;
+  top: 120px;
+  width: 3.5px;
+  height: 34px;
+  background: #252525;
+  border-radius: 3px 0 0 3px;
+  box-shadow: 0 52px 0 #252525, 0 100px 0 #252525;
+}
+.phone-shell::after {
+  content: '';
+  position: absolute;
+  right: -3.5px;
+  top: 166px;
+  width: 3.5px;
+  height: 72px;
+  background: #252525;
+  border-radius: 0 3px 3px 0;
+}
+
+.phone-screen {
+  width: 100%;
+  height: 100%;
+  background: #090909;
+  border-radius: 46px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.dynamic-island {
+  position: absolute;
+  top: 13px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 35px;
+  background: #000;
+  border-radius: 22px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.di-cam {
+  width: 11px;
+  height: 11px;
+  background: #151515;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 3px #0d0d0d, inset 0 0 0 4px #191919;
+}
+
+.status-bar {
+  height: 58px;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 28px 10px;
+  justify-content: space-between;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+.status-time { font-size: 15px; font-weight: 650; color: white; letter-spacing: -0.3px; }
+.status-icons { display: flex; align-items: center; gap: 6px; }
+
+.screen-container {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  min-height: 0;
+}
+
+.screen {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  opacity: 0;
+  transform: translateX(30px);
+  transition: opacity 0.28s cubic-bezier(0.4,0,0.2,1), transform 0.28s cubic-bezier(0.4,0,0.2,1);
+  pointer-events: none;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.screen::-webkit-scrollbar { display: none; }
+.screen.active { opacity: 1; transform: translateX(0); pointer-events: all; }
+.screen.slide-out { opacity: 0; transform: translateX(-30px); }
+
+.tab-bar {
+  height: 82px;
+  background: rgba(10,10,10,0.97);
+  backdrop-filter: blur(24px);
+  border-top: 1px solid rgba(255,255,255,0.055);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 8px 22px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 50;
+}
+
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 14px;
+  min-width: 58px;
+  position: relative;
+}
+.tab-item.active .tab-icon-wrap { color: #C8FF00; }
+.tab-item.active .tab-lbl { color: #C8FF00; }
+.tab-item:not(.active) .tab-icon-wrap { color: rgba(255,255,255,0.28); }
+.tab-item:not(.active) .tab-lbl { color: rgba(255,255,255,0.28); }
+.tab-icon-wrap { transition: color 0.2s; display: flex; align-items: center; justify-content: center; }
+.tab-lbl { font-size: 9.5px; font-weight: 500; transition: color 0.2s; }
+
+.home-ind {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Cards */
+.card {
+  background: #131313;
+  border: 1px solid rgba(255,255,255,0.058);
+  border-radius: 20px;
+  overflow: hidden;
+}
+.card-sm { background: #131313; border: 1px solid rgba(255,255,255,0.058); border-radius: 18px; }
+
+/* Workout hero card */
+.workout-hero {
+  background: linear-gradient(140deg, #181808 0%, #121208 50%, #0e0e08 100%);
+  border: 1px solid rgba(200,255,0,0.11);
+  border-radius: 22px;
+  position: relative;
+  overflow: hidden;
+}
+.workout-hero::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -40px;
+  width: 180px; height: 180px;
+  background: radial-gradient(circle, rgba(200,255,0,0.07) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.workout-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -30px; left: -30px;
+  width: 120px; height: 120px;
+  background: radial-gradient(circle, rgba(200,255,0,0.04) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Badges */
+.badge-chest { background: rgba(248,113,113,0.10); color: #f87171; border: 1px solid rgba(248,113,113,0.18); border-radius: 20px; padding: 2px 9px; font-size: 10px; font-weight: 600; }
+.badge-shoulders { background: rgba(192,132,252,0.10); color: #c084fc; border: 1px solid rgba(192,132,252,0.18); border-radius: 20px; padding: 2px 9px; font-size: 10px; font-weight: 600; }
+.badge-triceps { background: rgba(251,146,60,0.10); color: #fb923c; border: 1px solid rgba(251,146,60,0.18); border-radius: 20px; padding: 2px 9px; font-size: 10px; font-weight: 600; }
+
+/* Checkboxes */
+.ex-check {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.14);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: background 0.25s, border-color 0.25s, transform 0.2s;
+  flex-shrink: 0;
+}
+.ex-check.done { background: #C8FF00; border-color: #C8FF00; }
+.ex-check:active { transform: scale(0.88); }
+
+.check-svg {
+  opacity: 0;
+  transform: scale(0.4) rotate(-20deg);
+  transition: opacity 0.25s cubic-bezier(0.34,1.56,0.64,1), transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+.ex-check.done .check-svg { opacity: 1; transform: scale(1) rotate(0deg); }
+
+/* CTA Button */
+.cta-btn {
+  background: #C8FF00;
+  color: #000;
+  font-weight: 700;
+  border-radius: 16px;
+  padding: 15px 24px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 14.5px;
+  letter-spacing: 0.01em;
+  transition: all 0.18s;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  user-select: none;
+}
+.cta-btn:active { transform: scale(0.96); background: #b5e800; }
+
+/* Progress bar */
+.prog-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #C8FF00, #a3e000);
+  border-radius: 4px;
+  transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* Pinned note */
+.pinned-note {
+  background: rgba(200,255,0,0.045);
+  border: 1px solid rgba(200,255,0,0.13);
+  border-radius: 16px;
+}
+
+/* Chat bubbles */
+.bubble-coach {
+  background: #1c1c1c;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 18px 18px 18px 5px;
+  padding: 11px 14px;
+  max-width: 78%;
+}
+.bubble-athlete {
+  background: #C8FF00;
+  border-radius: 18px 18px 5px 18px;
+  padding: 11px 14px;
+  max-width: 78%;
+}
+
+/* Typing dots */
+@keyframes typing-dot {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.35; }
+  40% { transform: scale(1); opacity: 1; }
+}
+.typing-dot { animation: typing-dot 1.4s ease-in-out infinite; }
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+/* Video player */
+.video-bg {
+  background: linear-gradient(160deg, #0b1a0d 0%, #0e1510 40%, #080e10 100%);
+  position: relative;
+}
+.video-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(200,255,0,0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200,255,0,0.028) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.video-glow {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 220px; height: 220px;
+  background: radial-gradient(circle, rgba(200,255,0,0.055) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+/* Play button pulse */
+@keyframes ring-pulse {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.7); opacity: 0; }
+}
+.play-ring {
+  position: absolute; inset: -8px;
+  border: 1.5px solid rgba(200,255,0,0.35);
+  border-radius: 50%;
+  animation: ring-pulse 2s ease-out infinite;
+}
+
+/* Online dot */
+.online-dot {
+  width: 9px; height: 9px;
+  background: #22c55e;
+  border-radius: 50%;
+  border: 2px solid #090909;
+}
+
+/* Notif dot */
+.notif-dot {
+  width: 7px; height: 7px;
+  background: #C8FF00;
+  border-radius: 50%;
+  position: absolute;
+  top: -1px; right: -1px;
+}
+
+/* Progress ring */
+.ring-arc {
+  transform: rotate(-90deg);
+  transform-origin: center;
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* Workout complete modal */
+@keyframes modal-in {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+.modal-card { animation: modal-in 0.3s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+
+@keyframes confetti {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(500px) rotate(720deg); opacity: 0; }
+}
+
+
+/* Exercise detail screen — flex column so bottom bar sticks */
+#screen-exercise {
+  overflow-y: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Exercise timer bottom bar */
+.ex-timer-bar {
+  flex-shrink: 0;
+  background: #0d0d0d;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding: 14px 20px 18px;
+}
+
+.set-seg {
+  flex: 1; height: 4px;
+  border-radius: 4px;
+  transition: background 0.4s;
+}
+</style>
+</head>
+<body>
+
+<div class="desktop-hint">APEX Training · MVP Prototype · Tap to navigate</div>
+
+<div class="phone-shell">
+  <div class="phone-screen">
+
+    <!-- Dynamic Island -->
+    <div class="dynamic-island">
+      <div style="width:9px;height:9px;background:#111;border-radius:50%;"></div>
+      <div class="di-cam"></div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <!-- Signal bars -->
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="none">
+          <rect x="0" y="7" width="2.5" height="4" rx="0.8" fill="white"/>
+          <rect x="4" y="5" width="2.5" height="6" rx="0.8" fill="white"/>
+          <rect x="8" y="2.5" width="2.5" height="8.5" rx="0.8" fill="white"/>
+          <rect x="12" y="0" width="2.5" height="11" rx="0.8" fill="white"/>
+        </svg>
+        <!-- WiFi -->
+        <svg width="15" height="11" viewBox="0 0 15 11" fill="none">
+          <path d="M7.5 8.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z" fill="white"/>
+          <path d="M3.2 6.3a6.1 6.1 0 0 1 8.6 0" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+          <path d="M0.5 3.6a10.1 10.1 0 0 1 14 0" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none" opacity="0.5"/>
+        </svg>
+        <!-- Battery -->
+        <div style="display:flex;align-items:center;gap:1px;">
+          <div style="width:24px;height:11.5px;border:1.5px solid rgba(255,255,255,0.45);border-radius:3px;padding:1.5px;position:relative;">
+            <div style="width:82%;height:100%;background:white;border-radius:1px;"></div>
+          </div>
+          <div style="width:2px;height:4px;background:rgba(255,255,255,0.4);border-radius:0 1px 1px 0;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen Container -->
+    <div class="screen-container" id="screenContainer">
+
+      <!-- ==================== SCREEN: HOME ==================== -->
+      <div class="screen active" id="screen-home">
+        <div style="padding:4px 20px 100px;">
+
+          <!-- Greeting -->
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;">
+            <div>
+              <div style="color:rgba(255,255,255,0.38);font-size:12.5px;font-weight:500;margin-bottom:3px;">Good morning,</div>
+              <div style="color:white;font-size:22px;font-weight:800;letter-spacing:-0.6px;">Alex Carter 👋</div>
+            </div>
+            <div style="position:relative;">
+              <div style="width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#C8FF00 0%,#7ab800 100%);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#000;box-shadow:0 0 0 2.5px rgba(200,255,0,0.18),0 0 20px rgba(200,255,0,0.12);">
+                AC
+              </div>
+              <div style="position:absolute;bottom:1px;right:1px;width:11px;height:11px;background:#22c55e;border-radius:50%;border:2px solid #090909;"></div>
+            </div>
+          </div>
+
+          <!-- Today's Workout Card -->
+          <div class="workout-hero" style="padding:20px;margin-bottom:14px;cursor:pointer;" onclick="navigate('workout')">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+              <div>
+                <div style="color:rgba(200,255,0,0.65);font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:6px;">Today's Workout</div>
+                <div style="color:white;font-size:19px;font-weight:800;letter-spacing:-0.4px;line-height:1.15;">Upper Body Power</div>
+                <div style="color:rgba(255,255,255,0.38);font-size:12px;margin-top:3px;">Week 2 · Day 3</div>
+              </div>
+              <div style="background:rgba(200,255,0,0.09);border:1px solid rgba(200,255,0,0.18);border-radius:10px;padding:5px 10px;flex-shrink:0;">
+                <div style="color:#C8FF00;font-size:10px;font-weight:700;letter-spacing:0.06em;">HARD</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:14px;margin-bottom:18px;">
+              <div style="display:flex;align-items:center;gap:5px;">
+                <i data-lucide="clock" style="color:rgba(255,255,255,0.3);width:13px;height:13px;"></i>
+                <span style="color:rgba(255,255,255,0.42);font-size:12px;">~65 min</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <i data-lucide="dumbbell" style="color:rgba(255,255,255,0.3);width:13px;height:13px;"></i>
+                <span style="color:rgba(255,255,255,0.42);font-size:12px;">6 exercises</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <i data-lucide="flame" style="color:rgba(255,255,255,0.3);width:13px;height:13px;"></i>
+                <span style="color:rgba(255,255,255,0.42);font-size:12px;">~480 kcal</span>
+              </div>
+            </div>
+            <div class="cta-btn" style="border-radius:14px;padding:13px 24px;font-size:14px;">
+              <i data-lucide="play" style="width:15px;height:15px;"></i>
+              Start Workout
+            </div>
+          </div>
+
+          <!-- Stats row -->
+          <div style="display:flex;gap:10px;margin-bottom:14px;">
+            <!-- Progress ring -->
+            <div class="card-sm" style="padding:16px;display:flex;flex-direction:column;align-items:center;gap:8px;width:110px;flex-shrink:0;">
+              <div style="position:relative;width:72px;height:72px;">
+                <svg width="72" height="72" viewBox="0 0 72 72">
+                  <circle cx="36" cy="36" r="28" fill="none" stroke="rgba(255,255,255,0.055)" stroke-width="6"/>
+                  <circle cx="36" cy="36" r="28" fill="none" stroke="#C8FF00" stroke-width="6"
+                    stroke-dasharray="175.9" stroke-dashoffset="70.4"
+                    stroke-linecap="round" class="ring-arc" id="homeRing"/>
+                </svg>
+                <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;">
+                  <div style="color:white;font-size:20px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums;">3</div>
+                  <div style="color:rgba(255,255,255,0.3);font-size:10px;font-weight:500;">/5</div>
+                </div>
+              </div>
+              <div style="color:rgba(255,255,255,0.4);font-size:10.5px;font-weight:500;text-align:center;line-height:1.3;">This<br>Week</div>
+            </div>
+
+            <!-- Two stat cards stacked -->
+            <div style="flex:1;display:flex;flex-direction:column;gap:10px;">
+              <div class="card-sm" style="padding:14px;flex:1;">
+                <div style="color:rgba(255,255,255,0.35);font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:5px;">Streak</div>
+                <div style="display:flex;align-items:baseline;gap:4px;">
+                  <span style="color:white;font-size:24px;font-weight:900;font-variant-numeric:tabular-nums;line-height:1;">12</span>
+                  <span style="color:#C8FF00;font-size:12px;font-weight:700;">days 🔥</span>
+                </div>
+              </div>
+              <div class="card-sm" style="padding:14px;flex:1;">
+                <div style="color:rgba(255,255,255,0.35);font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:5px;">Volume</div>
+                <div style="display:flex;align-items:baseline;gap:4px;">
+                  <span style="color:white;font-size:22px;font-weight:900;font-variant-numeric:tabular-nums;line-height:1;">8.4</span>
+                  <span style="color:rgba(255,255,255,0.35);font-size:12px;">tons</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Day tracker -->
+          <div class="card-sm" style="padding:14px 16px;margin-bottom:14px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+              <div style="color:rgba(255,255,255,0.45);font-size:12px;font-weight:500;">Weekly Sessions</div>
+              <div style="color:#C8FF00;font-size:10.5px;font-weight:700;">3 / 5 done</div>
+            </div>
+            <div style="display:flex;gap:6px;">
+              <!-- M done -->
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;">
+                <div style="width:38px;height:38px;border-radius:50%;background:#C8FF00;display:flex;align-items:center;justify-content:center;">
+                  <svg width="14" height="11" viewBox="0 0 14 11" fill="none"><polyline points="1 5 5 9 13 1" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div style="color:rgba(255,255,255,0.55);font-size:10px;font-weight:600;">M</div>
+              </div>
+              <!-- T done -->
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;">
+                <div style="width:38px;height:38px;border-radius:50%;background:#C8FF00;display:flex;align-items:center;justify-content:center;">
+                  <svg width="14" height="11" viewBox="0 0 14 11" fill="none"><polyline points="1 5 5 9 13 1" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div style="color:rgba(255,255,255,0.55);font-size:10px;font-weight:600;">T</div>
+              </div>
+              <!-- W current -->
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;">
+                <div style="width:38px;height:38px;border-radius:50%;background:#C8FF00;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 3px rgba(200,255,0,0.22);">
+                  <svg width="14" height="11" viewBox="0 0 14 11" fill="none"><polyline points="1 5 5 9 13 1" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div style="color:#C8FF00;font-size:10px;font-weight:700;">W</div>
+              </div>
+              <!-- T upcoming -->
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;">
+                <div style="width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.05);border:1.5px dashed rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;">
+                  <i data-lucide="dumbbell" style="color:rgba(255,255,255,0.18);width:14px;height:14px;"></i>
+                </div>
+                <div style="color:rgba(255,255,255,0.22);font-size:10px;font-weight:500;">T</div>
+              </div>
+              <!-- F upcoming -->
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;">
+                <div style="width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.05);border:1.5px dashed rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;">
+                  <i data-lucide="dumbbell" style="color:rgba(255,255,255,0.18);width:14px;height:14px;"></i>
+                </div>
+                <div style="color:rgba(255,255,255,0.22);font-size:10px;font-weight:500;">F</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Coach message preview -->
+          <div class="card" style="padding:15px;cursor:pointer;" onclick="navigate('feedback')">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px;">
+              <div style="display:flex;align-items:center;gap:7px;">
+                <i data-lucide="message-circle" style="color:#C8FF00;width:14px;height:14px;"></i>
+                <div style="color:rgba(255,255,255,0.42);font-size:11.5px;font-weight:500;">Coach Message</div>
+              </div>
+              <div style="background:rgba(200,255,0,0.1);border:1px solid rgba(200,255,0,0.18);border-radius:20px;padding:2px 9px;">
+                <div style="color:#C8FF00;font-size:10px;font-weight:700;">2 NEW</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:11px;">
+              <div style="position:relative;flex-shrink:0;">
+                <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#1d4ed8);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:white;">M</div>
+                <div class="online-dot" style="position:absolute;bottom:0;right:0;"></div>
+              </div>
+              <div style="min-width:0;">
+                <div style="color:white;font-size:13px;font-weight:650;margin-bottom:3px;">Coach Marco</div>
+                <div style="color:rgba(255,255,255,0.38);font-size:12px;line-height:1.45;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Great session yesterday! Your form on bench press is improving...</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- end home -->
+
+      <!-- ==================== SCREEN: WORKOUT ==================== -->
+      <div class="screen" id="screen-workout">
+
+        <!-- Sticky header -->
+        <div style="padding:4px 20px 14px;background:#090909;position:sticky;top:0;z-index:20;border-bottom:1px solid rgba(255,255,255,0.04);">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+            <button onclick="navigate('home')" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.06);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s;" onmouseenter="this.style.background='rgba(255,255,255,0.1)'" onmouseleave="this.style.background='rgba(255,255,255,0.06)'">
+              <i data-lucide="chevron-left" style="color:white;width:18px;height:18px;"></i>
+            </button>
+            <div style="text-align:center;">
+              <div style="color:white;font-size:14px;font-weight:700;letter-spacing:-0.2px;">Upper Body Power</div>
+              <div style="color:rgba(255,255,255,0.35);font-size:11px;">Week 2 · Day 3</div>
+            </div>
+            <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;cursor:pointer;">
+              <i data-lucide="more-horizontal" style="color:rgba(255,255,255,0.5);width:16px;height:16px;"></i>
+            </div>
+          </div>
+          <!-- Info + difficulty -->
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+            <div style="display:flex;align-items:center;gap:5px;">
+              <i data-lucide="clock" style="color:rgba(255,255,255,0.3);width:13px;height:13px;"></i>
+              <span style="color:rgba(255,255,255,0.4);font-size:12px;">~65 min</span>
+            </div>
+            <div style="width:3px;height:3px;background:rgba(255,255,255,0.12);border-radius:50%;"></div>
+            <div style="background:rgba(200,255,0,0.09);border:1px solid rgba(200,255,0,0.18);border-radius:8px;padding:3px 9px;">
+              <span style="color:#C8FF00;font-size:9.5px;font-weight:700;">HARD</span>
+            </div>
+            <div style="width:3px;height:3px;background:rgba(255,255,255,0.12);border-radius:50%;"></div>
+            <div style="color:rgba(255,255,255,0.4);font-size:12px;" id="wkt-prog-txt">0 / 6 done</div>
+          </div>
+          <!-- Progress bar -->
+          <div style="height:3.5px;background:rgba(255,255,255,0.055);border-radius:4px;overflow:hidden;">
+            <div id="wkt-prog-bar" class="prog-fill" style="width:0%;"></div>
+          </div>
+        </div>
+
+        <!-- Exercise list -->
+        <div id="exercise-list" style="padding:14px 20px 110px;"></div>
+      </div><!-- end workout -->
+
+      <!-- ==================== SCREEN: EXERCISE DETAIL ==================== -->
+      <div class="screen" id="screen-exercise">
+        <!-- Floating back button -->
+        <button onclick="navigate('workout')" style="position:absolute;top:10px;left:14px;z-index:30;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.55);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.09);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s;" onmouseenter="this.style.background='rgba(0,0,0,0.75)'" onmouseleave="this.style.background='rgba(0,0,0,0.55)'">
+          <i data-lucide="chevron-left" style="color:white;width:18px;height:18px;"></i>
+        </button>
+
+        <!-- Video player -->
+        <div class="video-bg" style="height:264px;position:relative;overflow:hidden;flex-shrink:0;">
+          <div class="video-grid"></div>
+          <div class="video-glow"></div>
+
+          <!-- Athlete silhouette placeholder -->
+          <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:2;">
+            <div style="position:relative;width:76px;height:76px;" id="play-btn-wrap">
+              <div class="play-ring" id="play-ring"></div>
+              <div style="width:76px;height:76px;border-radius:50%;background:rgba(200,255,0,0.1);border:2px solid rgba(200,255,0,0.22);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;position:relative;z-index:1;" onclick="togglePlay()" onmouseenter="this.style.background='rgba(200,255,0,0.18)'" onmouseleave="this.style.background='rgba(200,255,0,0.1)'" id="play-circle">
+                <i data-lucide="play" style="color:#C8FF00;width:26px;height:26px;margin-left:3px;" id="play-icon"></i>
+              </div>
+            </div>
+            <div style="color:rgba(255,255,255,0.32);font-size:11.5px;font-weight:500;" id="video-label">Coach Demo Video</div>
+          </div>
+
+          <!-- Controls overlay -->
+          <div style="position:absolute;bottom:0;left:0;right:0;padding:10px 14px 12px;background:linear-gradient(transparent,rgba(0,0,0,0.78));z-index:3;">
+            <!-- Scrubber -->
+            <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px;">
+              <span style="color:rgba(255,255,255,0.5);font-size:9.5px;font-variant-numeric:tabular-nums;min-width:30px;" id="vid-time">0:00</span>
+              <div style="flex:1;height:3px;background:rgba(255,255,255,0.15);border-radius:3px;position:relative;cursor:pointer;" onclick="seekVideo(event)">
+                <div style="height:100%;background:#C8FF00;border-radius:3px;transition:width 0.8s linear;width:0%;" id="vid-scrubber"></div>
+              </div>
+              <span style="color:rgba(255,255,255,0.35);font-size:9.5px;font-variant-numeric:tabular-nums;">2:34</span>
+            </div>
+            <!-- Buttons row -->
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div style="display:flex;gap:16px;align-items:center;">
+                <i data-lucide="skip-back" style="color:rgba(255,255,255,0.4);width:15px;height:15px;cursor:pointer;"></i>
+                <i data-lucide="play" style="color:white;width:17px;height:17px;cursor:pointer;" id="ctrl-play-icon" onclick="togglePlay()"></i>
+                <i data-lucide="skip-forward" style="color:rgba(255,255,255,0.4);width:15px;height:15px;cursor:pointer;"></i>
+              </div>
+              <div style="display:flex;gap:14px;align-items:center;">
+                <i data-lucide="volume-2" style="color:rgba(255,255,255,0.35);width:15px;height:15px;cursor:pointer;"></i>
+                <i data-lucide="maximize-2" style="color:rgba(255,255,255,0.35);width:15px;height:15px;cursor:pointer;"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detail content (filled by JS) -->
+        <div id="exercise-detail" style="padding:18px 20px 20px;overflow-y:auto;flex:1;scrollbar-width:none;-webkit-overflow-scrolling:touch;"></div>
+
+        <!-- Exercise Timer Bar (sticky bottom) -->
+        <div id="ex-timer-bar" class="ex-timer-bar"></div>
+      </div><!-- end exercise -->
+
+      <!-- ==================== SCREEN: FEEDBACK / CHAT ==================== -->
+      <div class="screen" id="screen-feedback" style="display:flex;flex-direction:column;">
+
+        <!-- Chat header -->
+        <div style="padding:6px 18px 12px;background:#090909;border-bottom:1px solid rgba(255,255,255,0.055);flex-shrink:0;">
+          <div style="display:flex;align-items:center;gap:11px;">
+            <button onclick="navigate('home')" style="width:32px;height:32px;border-radius:50%;background:transparent;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <i data-lucide="chevron-left" style="color:rgba(255,255,255,0.55);width:18px;height:18px;"></i>
+            </button>
+            <div style="position:relative;flex-shrink:0;">
+              <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#1d4ed8);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:white;box-shadow:0 0 0 2px rgba(59,130,246,0.2);">M</div>
+              <div class="online-dot" style="position:absolute;bottom:0;right:0;"></div>
+            </div>
+            <div style="flex:1;">
+              <div style="color:white;font-size:15px;font-weight:700;">Coach Marco</div>
+              <div style="color:#22c55e;font-size:11px;font-weight:600;display:flex;align-items:center;gap:4px;margin-top:1px;">
+                <div style="width:5px;height:5px;background:#22c55e;border-radius:50%;"></div>
+                Online now
+              </div>
+            </div>
+            <div style="display:flex;gap:14px;align-items:center;">
+              <i data-lucide="video" style="color:rgba(255,255,255,0.3);width:18px;height:18px;cursor:pointer;"></i>
+              <i data-lucide="phone" style="color:rgba(255,255,255,0.3);width:17px;height:17px;cursor:pointer;"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pinned note -->
+        <div style="padding:10px 16px 4px;flex-shrink:0;">
+          <div class="pinned-note" style="padding:11px 13px;display:flex;align-items:flex-start;gap:9px;">
+            <i data-lucide="pin" style="color:#C8FF00;width:13px;height:13px;flex-shrink:0;margin-top:2px;"></i>
+            <div>
+              <div style="color:#C8FF00;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;">Pinned Session Note</div>
+              <div style="color:rgba(255,255,255,0.65);font-size:12px;line-height:1.55;">Increase bench press weight next time. You're ready for +2.5kg. Focus on controlled eccentric.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <div id="chat-messages" style="flex:1;overflow-y:auto;padding:10px 16px 8px;display:flex;flex-direction:column;gap:11px;scrollbar-width:none;min-height:0;"></div>
+
+        <!-- Input -->
+        <div style="padding:10px 14px 14px;background:#090909;border-top:1px solid rgba(255,255,255,0.055);flex-shrink:0;">
+          <div style="display:flex;gap:9px;align-items:center;">
+            <div style="flex:1;background:#161616;border:1px solid rgba(255,255,255,0.075);border-radius:26px;padding:11px 14px;display:flex;align-items:center;gap:8px;transition:border-color 0.2s;" id="chat-input-wrap">
+              <input id="chat-input" type="text" placeholder="Write a message..."
+                style="flex:1;background:transparent;border:none;outline:none;color:white;font-size:13.5px;font-family:'Inter',sans-serif;"
+                onfocus="document.getElementById('chat-input-wrap').style.borderColor='rgba(200,255,0,0.3)'"
+                onblur="document.getElementById('chat-input-wrap').style.borderColor='rgba(255,255,255,0.075)'"
+                onkeydown="if(event.key==='Enter'){event.preventDefault();sendMessage();}">
+              <i data-lucide="smile" style="color:rgba(255,255,255,0.22);width:15px;height:15px;cursor:pointer;flex-shrink:0;"></i>
+            </div>
+            <button onclick="sendMessage()"
+              style="width:44px;height:44px;border-radius:50%;background:#C8FF00;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.18s;"
+              onmousedown="this.style.transform='scale(0.9)';this.style.background='#b5e800'"
+              onmouseup="this.style.transform='scale(1)';this.style.background='#C8FF00'"
+              ontouchstart="this.style.transform='scale(0.9)'"
+              ontouchend="this.style.transform='scale(1)'">
+              <i data-lucide="send" style="color:#000;width:15px;height:15px;"></i>
+            </button>
+          </div>
+        </div>
+
+      </div><!-- end feedback -->
+
+    </div><!-- end screen-container -->
+
+    <!-- Tab Bar -->
+    <div class="tab-bar" id="tabBar">
+      <div class="tab-item active" id="tab-home" onclick="navigate('home')">
+        <div class="tab-icon-wrap"><i data-lucide="home" style="width:21px;height:21px;"></i></div>
+        <span class="tab-lbl">Home</span>
+      </div>
+      <div class="tab-item" id="tab-workout" onclick="navigate('workout')">
+        <div class="tab-icon-wrap"><i data-lucide="dumbbell" style="width:21px;height:21px;"></i></div>
+        <span class="tab-lbl">Workout</span>
+      </div>
+      <div class="tab-item" id="tab-progress" onclick="navigate('home')">
+        <div class="tab-icon-wrap"><i data-lucide="bar-chart-2" style="width:21px;height:21px;"></i></div>
+        <span class="tab-lbl">Progress</span>
+      </div>
+      <div class="tab-item" id="tab-feedback" onclick="navigate('feedback')" style="position:relative;">
+        <div class="tab-icon-wrap" style="position:relative;">
+          <i data-lucide="message-circle" style="width:21px;height:21px;"></i>
+          <div class="notif-dot" id="notif-dot"></div>
+        </div>
+        <span class="tab-lbl">Chat</span>
+      </div>
+    </div>
+
+    <!-- Home indicator -->
+    <div class="home-ind">
+      <div style="width:130px;height:5px;background:rgba(255,255,255,0.18);border-radius:3px;"></div>
+    </div>
+
+  </div><!-- end phone-screen -->
+</div><!-- end phone-shell -->
+
+<script>
+// ─── DATA ────────────────────────────────────────────────
+const EXERCISES = [
+  { id:1, name:"Bench Press",            muscle:"Chest",     badge:"badge-chest",     sets:4, reps:8,  rest:"90s" },
+  { id:2, name:"Incline Dumbbell Press", muscle:"Chest",     badge:"badge-chest",     sets:3, reps:10, rest:"60s" },
+  { id:3, name:"Cable Fly",             muscle:"Chest",     badge:"badge-chest",     sets:3, reps:12, rest:"45s" },
+  { id:4, name:"Overhead Press",        muscle:"Shoulders", badge:"badge-shoulders", sets:4, reps:8,  rest:"90s" },
+  { id:5, name:"Lateral Raises",        muscle:"Shoulders", badge:"badge-shoulders", sets:3, reps:15, rest:"30s" },
+  { id:6, name:"Tricep Pushdown",       muscle:"Triceps",   badge:"badge-triceps",   sets:3, reps:12, rest:"45s" },
+];
+
+const INSTRUCTIONS = {
+  1: ["Set up bench flat. Grip bar slightly wider than shoulder-width with full thumbs-around grip.", "Unrack bar, lower slowly to mid-chest over 2-3 seconds. Keep elbows at ~75° angle.", "Pause briefly at chest — do not bounce. Press explosively back to start.", "Keep feet flat on floor, back slightly arched, scapulas retracted throughout entire set."],
+  2: ["Grab dumbbells, set incline to 30-45°. Hold at shoulder height, palms forward.", "Press up and slightly inward until arms fully extended, dumbbells nearly touching.", "Lower slowly over 3 seconds, feeling chest stretch at the bottom.", "Keep wrists stacked over elbows throughout. Avoid flaring past 90°."],
+  3: ["Set cable at chest height on both sides. Stand centered, step one foot forward.", "Hold handles with slight bend in elbows — this bend stays fixed throughout.", "Bring handles together in wide arc, squeezing chest hard at the center.", "Return slowly, feeling full stretch, then repeat without losing tension."],
+  4: ["Stand feet shoulder-width. Bar sits on upper chest at shoulder level, elbows slightly forward.", "Brace core and glutes. Press bar straight overhead in one explosive motion.", "Fully lock out elbows at top, bar positioned over base of skull.", "Lower under control to starting position. Reset, then repeat."],
+  5: ["Stand with micro-bend in knees, dumbbells at sides, palms facing inward.", "Raise arms out to sides leading with pinky finger, reaching shoulder height.", "Pause 1 second at top. Lower over 3 full seconds — no swinging.", "Tip: lighter weight with strict form beats heavy with momentum every time."],
+  6: ["Attach rope to high cable. Grip each end with overhand grip, elbows pinned to sides.", "Starting position: elbows bent 90°, forearms parallel to floor.", "Drive rope down and split at bottom — elbows fully locked, hands at hips.", "Return slowly to 90° start. Elbows must not move forward at any point."],
+};
+
+const COACH_NOTES = {
+  1: "Keep your shoulder blades retracted before you unrack — this protects your shoulders. If you feel anterior delt pain, slightly widen your grip. You're ready to add 2.5kg this session.",
+  2: "You've been letting the dumbbells drift outward at the bottom. Think about keeping them in line with your mid-chest. Control the descent — that 3-second eccentric is where hypertrophy happens.",
+  3: "Think 'hug a barrel,' not 'push.' Your shoulders should stay low and back the whole time. If you feel it in your front delts, you're letting the shoulder joint take over.",
+  4: "Last session your elbows were flaring wide at the start. Keep them at a 45° angle to your torso on the way up — your rotator cuffs will thank you. Film this one for me.",
+  5: "Add the 2.5kg dumbbells today. Film your last set — I want to check your elbow bend. Lateral raises are 80% feel, 20% weight. Chase the burn, not the number.",
+  6: "Split the rope apart at the very bottom and hold for a full second. You're skipping that contraction and leaving gains on the table. Slow down and feel every rep.",
+};
+
+const INITIAL_MESSAGES = [
+  { from:'coach', text:"Great session yesterday! Your form on bench press is really improving. Next session try adding 2.5kg 💪", time:"Yesterday · 6:30 PM" },
+  { from:'coach', text:"Remember to film your last set of OHP so I can check your elbow position", time:"Yesterday · 6:32 PM" },
+  { from:'athlete', text:"Thanks Coach! I felt way stronger on the last two sets. Will definitely film it 🙌", time:"Yesterday · 7:15 PM" },
+  { from:'coach', text:"Perfect. Also eat your pre-workout meal 90 min before training, not 30 min. Makes a huge difference in output.", time:"Yesterday · 7:18 PM" },
+];
+
+const COACH_REPLIES = [
+  "Got it! Keep pushing, you're making real progress 💪",
+  "Perfect. See you in tomorrow's session!",
+  "That mindset is exactly why you're improving so fast.",
+  "Noted. Don't forget to stretch after cooldown tonight.",
+  "Love the commitment. Rest well tonight, recovery is training too.",
+];
+
+// ─── STATE ───────────────────────────────────────────────
+let currentScreen = 'home';
+let completedExercises = new Set();
+let selectedExId = 1;
+let chatMessages = [...INITIAL_MESSAGES];
+let isPlaying = false;
+let vidProgress = 0;
+let vidInterval = null;
+const VID_DURATION = 154; // 2:34
+
+// Exercise timer (per-exercise set/rest tracker)
+let exState      = 'idle';  // 'idle' | 'active' | 'resting' | 'complete'
+let exCurrentSet = 0;       // 1-based, 0 = not started
+let exSetElapsed = 0;       // seconds elapsed during current set
+let exSetInterval = null;
+let exRestLeft   = 0;
+let exRestTotal  = 0;
+let exTotalSets  = 0;
+let exTargetReps = 0;
+let exRestIntervalEx = null;
+
+
+// ─── NAVIGATION ─────────────────────────────────────────
+function navigate(screen, exId) {
+  if (exId !== undefined) selectedExId = exId;
+  if (currentScreen === screen) return;
+
+  const from = document.getElementById(`screen-${currentScreen}`);
+  const to   = document.getElementById(`screen-${screen}`);
+
+  from.classList.remove('active');
+  from.classList.add('slide-out');
+
+  setTimeout(() => {
+    from.classList.remove('slide-out');
+    to.classList.add('active');
+
+    // Tab bar
+    const tb = document.getElementById('tabBar');
+    tb.style.display = screen === 'exercise' ? 'none' : 'flex';
+
+    // Active tab highlight
+    ['home','workout','progress','feedback'].forEach(t => {
+      const el = document.getElementById(`tab-${t}`);
+      if (el) el.classList.remove('active');
+    });
+    const activeTab = document.getElementById(`tab-${screen}`);
+    if (activeTab) activeTab.classList.add('active');
+
+    // Clean up exercise timer if leaving exercise screen
+    if (currentScreen === 'exercise' && screen !== 'exercise') {
+      clearInterval(exSetInterval); clearInterval(exRestIntervalEx);
+    }
+
+    currentScreen = screen;
+
+    if (screen === 'exercise') { renderExerciseDetail(); stopVideo(); }
+    if (screen === 'workout')  { renderExerciseList(); }
+    if (screen === 'feedback') { renderChat(); scrollChat(); }
+
+    lucide.createIcons();
+  }, 160);
+}
+
+function formatElapsed(s) {
+  const m = Math.floor(s / 60);
+  return `${m.toString().padStart(2,'0')}:${(s % 60).toString().padStart(2,'0')}`;
+}
+
+// ─── EXERCISE TIMER ──────────────────────────────────────
+function initExTimer(ex) {
+  clearInterval(exSetInterval);
+  clearInterval(exRestIntervalEx);
+  exState      = 'idle';
+  exCurrentSet = 0;
+  exSetElapsed = 0;
+  exTotalSets  = ex.sets;
+  exTargetReps = ex.reps;
+  exRestTotal  = parseInt(ex.rest, 10); // "90s" → 90
+  renderExTimerBar();
+}
+
+function startNextSet() {
+  exCurrentSet++;
+  exSetElapsed = 0;
+  exState = 'active';
+  clearInterval(exSetInterval);
+  exSetInterval = setInterval(() => {
+    exSetElapsed++;
+    const el = document.getElementById('ex-elapsed');
+    if (el) el.textContent = formatElapsed(exSetElapsed);
+  }, 1000);
+  renderExTimerBar();
+}
+
+function completeSet() {
+  clearInterval(exSetInterval);
+  if (exCurrentSet >= exTotalSets) {
+    exState = 'complete';
+    // Auto-mark exercise done in workout progress
+    if (!completedExercises.has(selectedExId)) {
+      completedExercises.add(selectedExId);
+      updateWorkoutProgress();
+    }
+    renderExTimerBar();
+    return;
+  }
+  // Start rest countdown
+  exState = 'resting';
+  exRestLeft = exRestTotal;
+  renderExTimerBar();
+  exRestIntervalEx = setInterval(() => {
+    exRestLeft--;
+    if (exRestLeft <= 0) {
+      clearInterval(exRestIntervalEx);
+      exState = 'idle';
+      renderExTimerBar();
+    } else {
+      updateExRest();
+    }
+  }, 1000);
+}
+
+function skipExRest() {
+  clearInterval(exRestIntervalEx);
+  exState = 'idle';
+  renderExTimerBar();
+}
+
+function finishExercise() {
+  clearInterval(exSetInterval);
+  clearInterval(exRestIntervalEx);
+  if (!completedExercises.has(selectedExId)) {
+    completedExercises.add(selectedExId);
+  }
+  navigate('workout');
+  setTimeout(() => {
+    renderExerciseList();
+    updateWorkoutProgress();
+    if (completedExercises.size === EXERCISES.length) setTimeout(showCompletion, 400);
+  }, 220);
+}
+
+function setSegs(done) {
+  return Array.from({ length: exTotalSets }, (_, i) =>
+    `<div class="set-seg" style="background:${i < done ? '#C8FF00' : i === done ? 'rgba(200,255,0,0.25)' : 'rgba(255,255,255,0.08)'};"></div>`
+  ).join('');
+}
+
+function renderExTimerBar() {
+  const bar = document.getElementById('ex-timer-bar');
+  if (!bar) return;
+
+  if (exState === 'idle') {
+    const isFirst = exCurrentSet === 0;
+    const setNum  = exCurrentSet + 1;
+    bar.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div style="color:${isFirst ? 'rgba(255,255,255,0.32)' : 'rgba(200,255,0,0.65)'};font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;">
+          ${isFirst ? 'Ready to start' : `Rest done ✓ · Set ${exCurrentSet} complete`}
+        </div>
+        <div style="display:flex;gap:5px;">${setSegs(exCurrentSet)}</div>
+      </div>
+      <div class="cta-btn" onclick="startNextSet()" style="border-radius:14px;padding:14px;font-size:14px;">
+        <svg width="12" height="15" viewBox="0 0 12 15" fill="black"><polygon points="0 0 12 7.5 0 15"/></svg>
+        Start Set ${setNum} of ${exTotalSets} &nbsp;·&nbsp; ${exTargetReps} reps
+      </div>`;
+    return;
+  }
+
+  if (exState === 'active') {
+    bar.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div>
+          <div style="color:rgba(255,255,255,0.35);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.11em;margin-bottom:2px;">Set ${exCurrentSet} of ${exTotalSets} · in progress</div>
+          <div style="color:white;font-size:16px;font-weight:800;">${exTargetReps} <span style="color:rgba(255,255,255,0.3);font-size:13px;font-weight:400;">reps</span></div>
+        </div>
+        <div style="text-align:right;">
+          <div style="color:rgba(255,255,255,0.28);font-size:9.5px;font-weight:500;margin-bottom:2px;">Elapsed</div>
+          <div style="color:#C8FF00;font-size:24px;font-weight:900;font-variant-numeric:tabular-nums;line-height:1;" id="ex-elapsed">${formatElapsed(exSetElapsed)}</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:5px;margin-bottom:10px;">${setSegs(exCurrentSet - 1)}</div>
+      <div class="cta-btn" onclick="completeSet()" style="border-radius:14px;padding:14px;font-size:14px;">
+        ✓ &nbsp; Set ${exCurrentSet} Done
+      </div>`;
+    return;
+  }
+
+  if (exState === 'resting') {
+    const R = 30, circ = +(2 * Math.PI * R).toFixed(1);
+    bar.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div>
+          <div style="color:rgba(255,255,255,0.3);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.11em;margin-bottom:2px;">Rest · after set ${exCurrentSet}</div>
+          <div style="color:white;font-size:14px;font-weight:700;">Next: Set ${exCurrentSet + 1} &nbsp;·&nbsp; ${exTargetReps} reps</div>
+        </div>
+        <button onclick="skipExRest()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.09);border-radius:20px;padding:6px 14px;color:rgba(255,255,255,0.4);font-size:11.5px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;flex-shrink:0;transition:background 0.18s;" onmouseenter="this.style.background='rgba(255,255,255,0.11)'" onmouseleave="this.style.background='rgba(255,255,255,0.06)'">Skip</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <div style="position:relative;width:72px;height:72px;flex-shrink:0;">
+          <svg width="72" height="72" viewBox="0 0 72 72">
+            <circle cx="36" cy="36" r="${R}" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="5"/>
+            <circle cx="36" cy="36" r="${R}" fill="none" stroke="#C8FF00" stroke-width="5"
+              stroke-dasharray="${circ}" stroke-dashoffset="0" stroke-linecap="round"
+              style="transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset 0.92s linear,stroke 0.3s;"
+              id="ex-rest-arc"/>
+          </svg>
+          <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+            <div style="color:white;font-size:22px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums;" id="ex-rest-sec">${exRestLeft}</div>
+            <div style="color:rgba(255,255,255,0.28);font-size:9px;margin-top:1px;">sec</div>
+          </div>
+        </div>
+        <div style="flex:1;">
+          <div style="display:flex;gap:5px;margin-bottom:10px;">${setSegs(exCurrentSet)}</div>
+          <div style="color:rgba(255,255,255,0.45);font-size:12px;">Set ${exCurrentSet} / ${exTotalSets} complete</div>
+          <div style="color:rgba(255,255,255,0.28);font-size:11.5px;margin-top:3px;" id="ex-rest-elapsed-label">Rest ${exRestTotal}s · 0s elapsed</div>
+        </div>
+      </div>`;
+    // Sync ring immediately
+    setTimeout(() => updateExRest(), 30);
+    return;
+  }
+
+  if (exState === 'complete') {
+    bar.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;background:rgba(200,255,0,0.06);border:1px solid rgba(200,255,0,0.14);border-radius:14px;padding:11px 14px;margin-bottom:11px;">
+        <div style="width:24px;height:24px;border-radius:50%;background:#C8FF00;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="11" height="9" viewBox="0 0 14 11" fill="none"><polyline points="1 5 5 9 13 1" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div>
+          <div style="color:#C8FF00;font-size:12px;font-weight:700;">All ${exTotalSets} sets complete! 🏆</div>
+          <div style="color:rgba(255,255,255,0.35);font-size:11px;margin-top:1px;">Exercise marked as done</div>
+        </div>
+      </div>
+      <div class="cta-btn" onclick="finishExercise()" style="border-radius:14px;padding:14px;font-size:14px;">
+        ← Back to Workout
+      </div>`;
+  }
+}
+
+function updateExRest() {
+  const secEl   = document.getElementById('ex-rest-sec');
+  const arc     = document.getElementById('ex-rest-arc');
+  const elapsed = document.getElementById('ex-rest-elapsed-label');
+  if (secEl) secEl.textContent = exRestLeft;
+  if (elapsed) elapsed.textContent = `Rest ${exRestTotal}s · ${exRestTotal - exRestLeft}s elapsed`;
+  if (arc) {
+    const R = 30, circ = 2 * Math.PI * R;
+    arc.style.strokeDashoffset = ((1 - exRestLeft / exRestTotal) * circ).toFixed(1);
+    arc.style.stroke = exRestLeft <= 5 ? '#ff5252' : '#C8FF00';
+  }
+}
+
+// ─── WORKOUT SCREEN ──────────────────────────────────────
+function renderExerciseList() {
+  const el = document.getElementById('exercise-list');
+
+  el.innerHTML = EXERCISES.map(ex => {
+    const done = completedExercises.has(ex.id);
+    return `
+    <div style="background:#131313;border:1px solid rgba(255,255,255,0.058);border-radius:18px;padding:15px 16px;margin-bottom:10px;display:flex;align-items:center;gap:13px;transition:opacity 0.3s;opacity:${done?'0.55':'1'};" id="ex-row-${ex.id}">
+      <!-- Checkbox -->
+      <div class="ex-check ${done?'done':''}" id="chk-${ex.id}" onclick="toggleExercise(event,${ex.id})">
+        <svg class="check-svg" width="11" height="9" viewBox="0 0 14 11" fill="none" style="opacity:${done?1:0};transform:${done?'scale(1) rotate(0deg)':'scale(0.4) rotate(-20deg)'};">
+          <polyline points="1 5 5 9 13 1" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <!-- Info -->
+      <div style="flex:1;min-width:0;cursor:pointer;" onclick="navigate('exercise',${ex.id})">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:5px;">
+          <span style="color:${done?'rgba(255,255,255,0.3)':'white'};font-size:14px;font-weight:650;${done?'text-decoration:line-through;':''}" id="ex-name-${ex.id}">${ex.name}</span>
+          <span class="${ex.badge}">${ex.muscle}</span>
+        </div>
+        <div style="display:flex;gap:11px;align-items:center;">
+          <span style="color:rgba(255,255,255,0.48);font-size:12px;font-variant-numeric:tabular-nums;font-weight:600;">${ex.sets}×${ex.reps}</span>
+          <div style="width:3px;height:3px;background:rgba(255,255,255,0.12);border-radius:50%;"></div>
+          <span style="color:rgba(255,255,255,0.3);font-size:12px;">Rest ${ex.rest}</span>
+        </div>
+      </div>
+      <!-- Video button -->
+      <div onclick="navigate('exercise',${ex.id})" style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.055);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:background 0.18s;" onmouseenter="this.style.background='rgba(200,255,0,0.1)'" onmouseleave="this.style.background='rgba(255,255,255,0.055)'" ontouchstart="this.style.background='rgba(200,255,0,0.12)'" ontouchend="this.style.background='rgba(255,255,255,0.055)'">
+        <svg width="11" height="13" viewBox="0 0 11 13" fill="#C8FF00"><polygon points="0 0 11 6.5 0 13"/></svg>
+      </div>
+    </div>`;
+  }).join('');
+
+  updateWorkoutProgress();
+  lucide.createIcons();
+}
+
+function toggleExercise(e, id) {
+  e.stopPropagation();
+  const chk = document.getElementById(`chk-${id}`);
+  const row = document.getElementById(`ex-row-${id}`);
+  const nameEl = document.getElementById(`ex-name-${id}`);
+  const svg = chk.querySelector('svg');
+
+  if (completedExercises.has(id)) {
+    completedExercises.delete(id);
+    chk.classList.remove('done');
+    svg.style.opacity = '0';
+    svg.style.transform = 'scale(0.4) rotate(-20deg)';
+    row.style.opacity = '1';
+    nameEl.style.textDecoration = 'none';
+    nameEl.style.color = 'white';
+  } else {
+    completedExercises.add(id);
+    chk.classList.add('done');
+    svg.style.opacity = '1';
+    svg.style.transform = 'scale(1) rotate(0deg)';
+    row.style.opacity = '0.55';
+    nameEl.style.textDecoration = 'line-through';
+    nameEl.style.color = 'rgba(255,255,255,0.3)';
+
+  }
+
+  updateWorkoutProgress();
+  if (completedExercises.size === EXERCISES.length) setTimeout(showCompletion, 350);
+}
+
+function updateWorkoutProgress() {
+  const done = completedExercises.size, total = EXERCISES.length;
+  const pct = (done / total) * 100;
+  const bar = document.getElementById('wkt-prog-bar');
+  const txt = document.getElementById('wkt-prog-txt');
+  if (bar) bar.style.width = pct + '%';
+  if (txt) txt.textContent = `${done} / ${total} done`;
+}
+
+// ─── EXERCISE DETAIL ─────────────────────────────────────
+function renderExerciseDetail() {
+  const ex = EXERCISES.find(e => e.id === selectedExId);
+  if (!ex) return;
+
+  const steps = INSTRUCTIONS[ex.id] || [];
+  const note  = COACH_NOTES[ex.id]  || '';
+
+  document.getElementById('exercise-detail').innerHTML = `
+    <!-- Name + tags -->
+    <div style="margin-bottom:18px;">
+      <h2 style="color:white;font-size:22px;font-weight:900;letter-spacing:-0.6px;margin:0 0 11px;">${ex.name}</h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <span class="${ex.badge}" style="padding:4px 13px;">${ex.muscle}</span>
+        <span style="background:rgba(255,255,255,0.055);border:1px solid rgba(255,255,255,0.09);color:rgba(255,255,255,0.45);font-size:11px;font-weight:600;padding:4px 13px;border-radius:20px;font-variant-numeric:tabular-nums;">${ex.sets} sets × ${ex.reps} reps</span>
+        <span style="background:rgba(255,255,255,0.055);border:1px solid rgba(255,255,255,0.09);color:rgba(255,255,255,0.45);font-size:11px;font-weight:500;padding:4px 13px;border-radius:20px;">Rest ${ex.rest}</span>
+      </div>
+    </div>
+
+    <!-- Steps -->
+    <div style="margin-bottom:18px;">
+      <div style="color:rgba(255,255,255,0.35);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:13px;">How to perform</div>
+      <div style="display:flex;flex-direction:column;gap:13px;">
+        ${steps.map((step,i) => `
+          <div style="display:flex;gap:11px;align-items:flex-start;">
+            <div style="width:22px;height:22px;border-radius:50%;background:#C8FF00;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">
+              <span style="color:#000;font-size:10px;font-weight:900;font-variant-numeric:tabular-nums;">${i+1}</span>
+            </div>
+            <p style="color:rgba(255,255,255,0.65);font-size:13px;line-height:1.65;margin:0;padding-top:2px;">${step}</p>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <!-- Coach note -->
+    <div class="pinned-note" style="padding:15px;">
+      <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px;">
+        <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#1d4ed8);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:white;flex-shrink:0;">M</div>
+        <div>
+          <div style="color:#C8FF00;font-size:10.5px;font-weight:700;">Coach Marco's Note</div>
+          <div style="color:rgba(255,255,255,0.28);font-size:10px;margin-top:1px;">Personalized tip for you</div>
+        </div>
+      </div>
+      <p style="color:rgba(255,255,255,0.65);font-size:13px;line-height:1.65;margin:0;">${note}</p>
+    </div>
+  `;
+
+  // Init timer bar for this exercise
+  initExTimer(ex);
+}
+
+// ─── VIDEO SIMULATION ────────────────────────────────────
+function togglePlay() {
+  isPlaying ? stopVideo() : startVideo();
+}
+
+function startVideo() {
+  isPlaying = true;
+  setPlayIcons('pause');
+  document.getElementById('video-label').textContent = 'Playing...';
+  document.getElementById('play-ring').style.animationPlayState = 'paused';
+
+  vidInterval = setInterval(() => {
+    vidProgress += 1 / VID_DURATION;
+    if (vidProgress >= 1) { vidProgress = 0; stopVideo(); return; }
+    updateVideoUI();
+  }, 1000);
+}
+
+function stopVideo() {
+  isPlaying = false;
+  clearInterval(vidInterval);
+  setPlayIcons('play');
+  const lbl = document.getElementById('video-label');
+  if (lbl) lbl.textContent = 'Tap to play';
+  const ring = document.getElementById('play-ring');
+  if (ring) ring.style.animationPlayState = 'running';
+}
+
+function setPlayIcons(name) {
+  ['play-icon','ctrl-play-icon'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.setAttribute('data-lucide', name);
+  });
+  lucide.createIcons();
+}
+
+function updateVideoUI() {
+  const scr = document.getElementById('vid-scrubber');
+  const tim = document.getElementById('vid-time');
+  if (scr) scr.style.width = (vidProgress * 100) + '%';
+  if (tim) {
+    const s = Math.floor(vidProgress * VID_DURATION);
+    tim.textContent = `${Math.floor(s/60)}:${(s%60).toString().padStart(2,'0')}`;
+  }
+}
+
+function seekVideo(e) {
+  const rect = e.currentTarget.getBoundingClientRect();
+  vidProgress = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+  updateVideoUI();
+}
+
+// ─── CHAT ────────────────────────────────────────────────
+function renderChat() {
+  const container = document.getElementById('chat-messages');
+  container.innerHTML = '';
+  let lastDate = '';
+
+  chatMessages.forEach(msg => {
+    const date = (msg.time || '').split('·')[0].trim();
+    if (date && date !== lastDate) {
+      const sep = document.createElement('div');
+      sep.style.cssText = 'text-align:center;margin:4px 0 2px;';
+      sep.innerHTML = `<span style="color:rgba(255,255,255,0.2);font-size:10px;font-weight:500;background:#151515;border:1px solid rgba(255,255,255,0.05);padding:3px 12px;border-radius:20px;">${date}</span>`;
+      container.appendChild(sep);
+      lastDate = date;
+    }
+
+    const wrap = document.createElement('div');
+    wrap.style.cssText = `display:flex;gap:8px;align-items:flex-end;${msg.from==='athlete'?'flex-direction:row-reverse;':''}`;
+
+    const timeStr = (msg.time || '').split('·')[1]?.trim() || '';
+
+    if (msg.from === 'coach') {
+      wrap.innerHTML = `
+        <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#1d4ed8);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:10px;color:white;flex-shrink:0;">M</div>
+        <div>
+          <div class="bubble-coach">
+            <p style="color:white;font-size:13px;line-height:1.55;margin:0;">${msg.text}</p>
+          </div>
+          ${timeStr ? `<div style="color:rgba(255,255,255,0.2);font-size:9.5px;margin-top:4px;padding-left:3px;">${timeStr}</div>` : ''}
+        </div>`;
+    } else {
+      wrap.innerHTML = `
+        <div>
+          <div class="bubble-athlete">
+            <p style="color:#000;font-size:13px;line-height:1.55;margin:0;font-weight:500;">${msg.text}</p>
+          </div>
+          ${timeStr ? `<div style="color:rgba(255,255,255,0.2);font-size:9.5px;margin-top:4px;text-align:right;padding-right:3px;">${timeStr}</div>` : ''}
+        </div>`;
+    }
+    container.appendChild(wrap);
+  });
+}
+
+function scrollChat() {
+  setTimeout(() => {
+    const c = document.getElementById('chat-messages');
+    if (c) c.scrollTop = c.scrollHeight;
+  }, 60);
+}
+
+function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const now = new Date();
+  const hh = now.getHours(), mm = now.getMinutes().toString().padStart(2,'0');
+  const period = hh < 12 ? 'AM' : 'PM';
+  const displayHour = hh % 12 || 12;
+
+  chatMessages.push({ from:'athlete', text, time:`Today · ${displayHour}:${mm} ${period}` });
+  input.value = '';
+  renderChat();
+  scrollChat();
+  lucide.createIcons();
+
+  // Hide notif dot when chat is active
+  const dot = document.getElementById('notif-dot');
+  if (dot) dot.style.display = 'none';
+
+  // Coach typing indicator
+  setTimeout(() => {
+    const c = document.getElementById('chat-messages');
+    if (!c) return;
+    const typing = document.createElement('div');
+    typing.id = 'typing-ind';
+    typing.style.cssText = 'display:flex;gap:8px;align-items:flex-end;';
+    typing.innerHTML = `
+      <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#1d4ed8);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:10px;color:white;flex-shrink:0;">M</div>
+      <div class="bubble-coach" style="padding:13px 16px;">
+        <div style="display:flex;gap:5px;align-items:center;">
+          <div style="width:6px;height:6px;background:rgba(255,255,255,0.38);border-radius:50%;" class="typing-dot"></div>
+          <div style="width:6px;height:6px;background:rgba(255,255,255,0.38);border-radius:50%;" class="typing-dot"></div>
+          <div style="width:6px;height:6px;background:rgba(255,255,255,0.38);border-radius:50%;" class="typing-dot"></div>
+        </div>
+      </div>`;
+    c.appendChild(typing);
+    scrollChat();
+
+    setTimeout(() => {
+      const t = document.getElementById('typing-ind');
+      if (t) t.remove();
+      const reply = COACH_REPLIES[Math.floor(Math.random() * COACH_REPLIES.length)];
+      const replyTime = `Today · ${displayHour}:${(now.getMinutes()+1).toString().padStart(2,'0')} ${period}`;
+      chatMessages.push({ from:'coach', text:reply, time:replyTime });
+      renderChat();
+      scrollChat();
+      lucide.createIcons();
+    }, 1800);
+  }, 700);
+}
+
+// ─── COMPLETION MODAL ────────────────────────────────────
+function showCompletion() {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:absolute;inset:0;background:rgba(0,0,0,0.88);backdrop-filter:blur(14px);z-index:500;display:flex;align-items:center;justify-content:center;padding:28px;';
+  overlay.innerHTML = `
+    <div class="modal-card" style="width:100%;max-width:300px;display:flex;flex-direction:column;align-items:center;gap:22px;text-align:center;">
+      <div style="position:relative;width:90px;height:90px;">
+        <div style="position:absolute;inset:-10px;border:2px solid rgba(200,255,0,0.18);border-radius:50%;animation:ring-pulse 1.8s ease-out infinite;"></div>
+        <div style="width:90px;height:90px;border-radius:50%;background:#C8FF00;display:flex;align-items:center;justify-content:center;">
+          <svg width="38" height="30" viewBox="0 0 38 30" fill="none"><polyline points="2 15 14 27 36 2" stroke="#000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+      <div>
+        <div style="color:white;font-size:24px;font-weight:900;letter-spacing:-0.6px;margin-bottom:9px;">Workout Complete! 🔥</div>
+        <div style="color:rgba(255,255,255,0.45);font-size:14px;line-height:1.65;">Outstanding session. 6/6 exercises done.<br>Coach Marco will be notified.</div>
+      </div>
+      <div style="width:100%;display:flex;flex-direction:column;gap:9px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;width:100%;">
+          <div style="background:#131313;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:13px;text-align:center;">
+            <div style="color:#C8FF00;font-size:20px;font-weight:900;font-variant-numeric:tabular-nums;">480</div>
+            <div style="color:rgba(255,255,255,0.35);font-size:10.5px;margin-top:3px;">kcal burned</div>
+          </div>
+          <div style="background:#131313;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:13px;text-align:center;">
+            <div style="color:#C8FF00;font-size:20px;font-weight:900;font-variant-numeric:tabular-nums;">62</div>
+            <div style="color:rgba(255,255,255,0.35);font-size:10.5px;margin-top:3px;">min duration</div>
+          </div>
+        </div>
+        <div class="cta-btn" style="width:100%;border-radius:14px;" onclick="document.querySelector('.phone-screen').removeChild(document.querySelector('.phone-screen > div[style*=absolute]'));navigate('home');">Back to Home</div>
+        <div style="color:rgba(255,255,255,0.25);font-size:12px;cursor:pointer;padding:4px;" onclick="document.querySelector('.phone-screen').removeChild(document.querySelector('.phone-screen > div[style*=absolute]'))">Dismiss</div>
+      </div>
+    </div>`;
+  document.querySelector('.phone-screen').appendChild(overlay);
+}
+
+// ─── INIT ────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  lucide.createIcons();
+  renderExerciseList();
+  renderChat();
+
+  // Animate progress ring on load
+  setTimeout(() => {
+    const ring = document.getElementById('homeRing');
+    if (ring) ring.style.strokeDashoffset = '70.4';
+  }, 600);
+});
+
+window.addEventListener('hashchange', () => {
+  const hash = location.hash.replace('#','') || 'home';
+  if (['home','workout','exercise','feedback'].includes(hash)) navigate(hash);
+});
+</script>
+</body>
+</html>
