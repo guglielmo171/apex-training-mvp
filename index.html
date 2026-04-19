@@ -701,11 +701,16 @@ body {
               <div style="color:rgba(255,255,255,0.38);font-size:12.5px;font-weight:500;margin-bottom:3px;">Good morning,</div>
               <div style="color:white;font-size:22px;font-weight:800;letter-spacing:-0.6px;">Alex Carter 👋</div>
             </div>
-            <div style="position:relative;">
-              <div style="width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#C8FF00 0%,#7ab800 100%);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#000;box-shadow:0 0 0 2.5px rgba(200,255,0,0.18),0 0 20px rgba(200,255,0,0.12);">
-                AC
+            <div style="display:flex;align-items:center;gap:10px;">
+              <button onclick="logout()" title="Logout" style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.18s;" onmouseenter="this.style.background='rgba(255,255,255,0.1)'" onmouseleave="this.style.background='rgba(255,255,255,0.05)'">
+                <i data-lucide="log-out" style="color:rgba(255,255,255,0.4);width:15px;height:15px;"></i>
+              </button>
+              <div style="position:relative;">
+                <div style="width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#C8FF00 0%,#7ab800 100%);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#000;box-shadow:0 0 0 2.5px rgba(200,255,0,0.18),0 0 20px rgba(200,255,0,0.12);">
+                  AC
+                </div>
+                <div style="position:absolute;bottom:1px;right:1px;width:11px;height:11px;background:#22c55e;border-radius:50%;border:2px solid #090909;"></div>
               </div>
-              <div style="position:absolute;bottom:1px;right:1px;width:11px;height:11px;background:#22c55e;border-radius:50%;border:2px solid #090909;"></div>
             </div>
           </div>
 
@@ -1753,6 +1758,12 @@ function showCompletion() {
 }
 
 // ─── ROLE / TAB BAR ─────────────────────────────────────
+function logout() {
+  currentRole = null;
+  document.getElementById('tabBar').style.display = 'none';
+  navigate('login');
+}
+
 function setRole(role) {
   currentRole = role;
   if (role === 'coach') {
@@ -1815,9 +1826,14 @@ function renderCoachHome() {
         <div style="color:rgba(255,255,255,0.38);font-size:12.5px;font-weight:500;margin-bottom:3px;">Buongiorno,</div>
         <div style="color:white;font-size:22px;font-weight:800;letter-spacing:-0.6px;">Coach Marco 👋</div>
       </div>
-      <div style="position:relative;">
-        <div style="width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#1d4ed8);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:white;box-shadow:0 0 0 2.5px rgba(59,130,246,0.18);">M</div>
-        <div style="position:absolute;bottom:1px;right:1px;width:11px;height:11px;background:#22c55e;border-radius:50%;border:2px solid #090909;"></div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button onclick="logout()" title="Logout" style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.18s;" onmouseenter="this.style.background='rgba(255,255,255,0.1)'" onmouseleave="this.style.background='rgba(255,255,255,0.05)'">
+          <i data-lucide="log-out" style="color:rgba(255,255,255,0.4);width:15px;height:15px;"></i>
+        </button>
+        <div style="position:relative;">
+          <div style="width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#1d4ed8);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:white;box-shadow:0 0 0 2.5px rgba(59,130,246,0.18);">M</div>
+          <div style="position:absolute;bottom:1px;right:1px;width:11px;height:11px;background:#22c55e;border-radius:50%;border:2px solid #090909;"></div>
+        </div>
       </div>
     </div>
 
