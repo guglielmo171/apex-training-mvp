@@ -241,9 +241,13 @@ body {
 }
 
 /* Badges */
-.badge-chest { background: rgba(248,113,113,0.10); color: #f87171; border: 1px solid rgba(248,113,113,0.18); border-radius: 20px; padding: 2px 9px; font-size: 10px; font-weight: 600; }
+.badge-chest     { background: rgba(248,113,113,0.10); color: #f87171; border: 1px solid rgba(248,113,113,0.18); border-radius: 20px; padding: 2px 9px; font-size: 10px; font-weight: 600; }
 .badge-shoulders { background: rgba(192,132,252,0.10); color: #c084fc; border: 1px solid rgba(192,132,252,0.18); border-radius: 20px; padding: 2px 9px; font-size: 10px; font-weight: 600; }
-.badge-triceps { background: rgba(251,146,60,0.10); color: #fb923c; border: 1px solid rgba(251,146,60,0.18); border-radius: 20px; padding: 2px 9px; font-size: 10px; font-weight: 600; }
+.badge-triceps   { background: rgba(251,146,60,0.10);  color: #fb923c; border: 1px solid rgba(251,146,60,0.18);  border-radius: 20px; padding: 2px 9px; font-size: 10px; font-weight: 600; }
+.badge-back      { background: rgba(96,165,250,0.10);  color: #60a5fa; border: 1px solid rgba(96,165,250,0.18);  border-radius: 20px; padding: 2px 9px; font-size: 10px; font-weight: 600; }
+.badge-biceps    { background: rgba(45,212,191,0.10);  color: #2dd4bf; border: 1px solid rgba(45,212,191,0.18);  border-radius: 20px; padding: 2px 9px; font-size: 10px; font-weight: 600; }
+.badge-legs      { background: rgba(167,139,250,0.10); color: #a78bfa; border: 1px solid rgba(167,139,250,0.18); border-radius: 20px; padding: 2px 9px; font-size: 10px; font-weight: 600; }
+.badge-core      { background: rgba(234,179,8,0.10);   color: #eab308; border: 1px solid rgba(234,179,8,0.18);   border-radius: 20px; padding: 2px 9px; font-size: 10px; font-weight: 600; }
 
 /* Checkboxes */
 .ex-check {
@@ -395,6 +399,89 @@ body {
 }
 
 
+/* ── LOGIN SCREEN ── */
+.role-card {
+  background: #131313;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 22px;
+  padding: 22px 20px;
+  cursor: pointer;
+  transition: all 0.22s;
+  position: relative;
+  overflow: hidden;
+}
+.role-card:active { transform: scale(0.97); }
+.role-card.lime-card {
+  background: linear-gradient(140deg, #181808 0%, #121208 50%, #0e0e08 100%);
+  border-color: rgba(200,255,0,0.18);
+}
+.role-card.lime-card::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -30px;
+  width: 140px; height: 140px;
+  background: radial-gradient(circle, rgba(200,255,0,0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* ── TOAST ── */
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes toast-out {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to   { opacity: 0; transform: translateY(20px) scale(0.95); }
+}
+.toast-msg { animation: toast-in 0.3s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+.toast-msg.hiding { animation: toast-out 0.25s ease-in forwards; }
+
+/* ── COACH STATUS BADGES ── */
+.status-active { background: rgba(200,255,0,0.1); border: 1px solid rgba(200,255,0,0.2); color: #C8FF00; border-radius: 20px; padding: 3px 10px; font-size: 10px; font-weight: 700; }
+.status-done   { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.09); color: rgba(255,255,255,0.4); border-radius: 20px; padding: 3px 10px; font-size: 10px; font-weight: 700; }
+.status-idle   { background: rgba(251,146,60,0.1); border: 1px solid rgba(251,146,60,0.2); color: #fb923c; border-radius: 20px; padding: 3px 10px; font-size: 10px; font-weight: 700; }
+
+/* ── WORKOUT TEMPLATE CARDS ── */
+.template-card {
+  background: #131313;
+  border: 1.5px solid rgba(255,255,255,0.07);
+  border-radius: 18px;
+  padding: 16px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+.template-card.selected {
+  border-color: rgba(200,255,0,0.35);
+  background: rgba(200,255,0,0.04);
+}
+.template-radio {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.2);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.2s;
+}
+.template-card.selected .template-radio { border-color: #C8FF00; }
+.template-radio-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #C8FF00;
+  opacity: 0;
+  transform: scale(0.4);
+  transition: opacity 0.2s, transform 0.2s;
+}
+.template-card.selected .template-radio-dot { opacity: 1; transform: scale(1); }
+
+/* ── LEVEL BADGES ── */
+.badge-advanced     { background: rgba(248,113,113,0.10); color: #f87171; border: 1px solid rgba(248,113,113,0.18); border-radius: 20px; padding: 2px 9px; font-size: 10px; font-weight: 600; }
+.badge-intermediate { background: rgba(251,146,60,0.10);  color: #fb923c; border: 1px solid rgba(251,146,60,0.18);  border-radius: 20px; padding: 2px 9px; font-size: 10px; font-weight: 600; }
+.badge-beginner     { background: rgba(200,255,0,0.10);   color: #C8FF00; border: 1px solid rgba(200,255,0,0.18);   border-radius: 20px; padding: 2px 9px; font-size: 10px; font-weight: 600; }
+
 /* Exercise detail screen — flex column so bottom bar sticks */
 #screen-exercise {
   overflow-y: hidden !important;
@@ -414,6 +501,94 @@ body {
   flex: 1; height: 4px;
   border-radius: 4px;
   transition: background 0.4s;
+}
+
+/* Plan editor (full screen) */
+.edit-label {
+  color: rgba(255,255,255,0.4);
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+.edit-input {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 14px;
+  outline: none;
+  font-family: 'Inter', sans-serif;
+  transition: border-color 0.18s;
+}
+.edit-input:focus { border-color: rgba(200,255,0,0.45); }
+.day-chip {
+  padding: 6px 11px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.4);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+}
+.day-chip.sel {
+  background: rgba(200,255,0,0.12);
+  border-color: rgba(200,255,0,0.35);
+  color: #C8FF00;
+}
+.level-pill {
+  flex: 1;
+  padding: 8px 6px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.38);
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+  user-select: none;
+}
+.level-pill.sel {
+  background: rgba(200,255,0,0.12);
+  border-color: rgba(200,255,0,0.35);
+  color: #C8FF00;
+}
+.plan-ex-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.055);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  margin-bottom: 7px;
+}
+.plan-ex-row.sel {
+  background: rgba(200,255,0,0.05);
+  border-color: rgba(200,255,0,0.2);
+}
+.plan-ex-cb {
+  width: 22px; height: 22px;
+  border-radius: 7px;
+  border: 2px solid rgba(255,255,255,0.18);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.18s, border-color 0.18s;
+}
+.plan-ex-row.sel .plan-ex-cb {
+  background: #C8FF00;
+  border-color: #C8FF00;
 }
 </style>
 </head>
@@ -460,8 +635,64 @@ body {
     <!-- Screen Container -->
     <div class="screen-container" id="screenContainer">
 
+      <!-- ==================== SCREEN: LOGIN ==================== -->
+      <div class="screen active" id="screen-login" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 24px;">
+        <!-- Logo -->
+        <div style="text-align:center;margin-bottom:40px;">
+          <div style="display:inline-flex;align-items:center;gap:11px;margin-bottom:14px;">
+            <div style="width:48px;height:48px;border-radius:16px;background:#C8FF00;display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(200,255,0,0.25);">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M3 12h4l3-9 4 18 3-9h4" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div style="color:white;font-size:28px;font-weight:900;letter-spacing:-1px;">APEX</div>
+          </div>
+          <div style="color:rgba(255,255,255,0.35);font-size:13px;font-weight:400;line-height:1.6;max-width:210px;margin:0 auto;">Digitize your training experience</div>
+        </div>
+
+        <!-- Role cards -->
+        <div style="width:100%;display:flex;flex-direction:column;gap:13px;margin-bottom:30px;">
+          <!-- Athlete -->
+          <div class="role-card lime-card" onclick="setRole('athlete')">
+            <div style="display:flex;align-items:center;gap:13px;margin-bottom:14px;">
+              <div style="width:46px;height:46px;border-radius:14px;background:rgba(200,255,0,0.1);border:1px solid rgba(200,255,0,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i data-lucide="dumbbell" style="color:#C8FF00;width:20px;height:20px;"></i>
+              </div>
+              <div style="flex:1;">
+                <div style="color:white;font-size:16px;font-weight:800;letter-spacing:-0.3px;">Sono un Atleta</div>
+                <div style="color:rgba(255,255,255,0.38);font-size:12px;margin-top:2px;">Segui i tuoi allenamenti</div>
+              </div>
+              <i data-lucide="chevron-right" style="color:rgba(255,255,255,0.22);width:18px;height:18px;flex-shrink:0;"></i>
+            </div>
+            <div class="cta-btn" style="border-radius:13px;padding:13px;font-size:13.5px;">
+              <i data-lucide="play" style="width:14px;height:14px;"></i>
+              Accedi come Atleta
+            </div>
+          </div>
+
+          <!-- Coach -->
+          <div class="role-card" onclick="setRole('coach')" style="border-color:rgba(255,255,255,0.1);">
+            <div style="display:flex;align-items:center;gap:13px;margin-bottom:14px;">
+              <div style="width:46px;height:46px;border-radius:14px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i data-lucide="users" style="color:#60a5fa;width:20px;height:20px;"></i>
+              </div>
+              <div style="flex:1;">
+                <div style="color:white;font-size:16px;font-weight:800;letter-spacing:-0.3px;">Sono un Coach</div>
+                <div style="color:rgba(255,255,255,0.38);font-size:12px;margin-top:2px;">Gestisci i tuoi atleti</div>
+              </div>
+              <i data-lucide="chevron-right" style="color:rgba(255,255,255,0.22);width:18px;height:18px;flex-shrink:0;"></i>
+            </div>
+            <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.11);border-radius:13px;padding:13px;text-align:center;font-weight:700;color:white;font-size:13.5px;display:flex;align-items:center;justify-content:center;gap:8px;">
+              <i data-lucide="layout-dashboard" style="width:14px;height:14px;color:rgba(255,255,255,0.55);"></i>
+              Accedi come Coach
+            </div>
+          </div>
+        </div>
+
+        <!-- Demo note -->
+        <div style="color:rgba(255,255,255,0.16);font-size:10.5px;font-weight:500;letter-spacing:0.06em;text-align:center;">DEMO MODE · NO REAL DATA</div>
+      </div><!-- end login -->
+
       <!-- ==================== SCREEN: HOME ==================== -->
-      <div class="screen active" id="screen-home">
+      <div class="screen" id="screen-home">
         <div style="padding:4px 20px 100px;">
 
           <!-- Greeting -->
@@ -779,30 +1010,46 @@ body {
 
       </div><!-- end feedback -->
 
+      <!-- ==================== SCREEN: COACH HOME ==================== -->
+      <div class="screen" id="screen-coach-home">
+        <div id="coach-home-content" style="padding:4px 20px 100px;"></div>
+      </div><!-- end coach-home -->
+
+      <!-- ==================== SCREEN: COACH ATHLETE ==================== -->
+      <div class="screen" id="screen-coach-athlete" style="display:flex;flex-direction:column;overflow:hidden;">
+        <div id="coach-athlete-content" style="flex:1;overflow-y:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;"></div>
+        <div id="coach-athlete-footer" style="flex-shrink:0;padding:10px 20px 20px;background:#090909;border-top:1px solid rgba(255,255,255,0.05);"></div>
+      </div><!-- end coach-athlete -->
+
+      <!-- ==================== SCREEN: COACH PLANS ==================== -->
+      <div class="screen" id="screen-coach-plans">
+        <div id="coach-plans-content" style="padding:4px 20px 100px;"></div>
+      </div><!-- end coach-plans -->
+
+      <!-- ==================== SCREEN: COACH ASSIGN ==================== -->
+      <div class="screen" id="screen-coach-assign" style="display:flex;flex-direction:column;overflow:hidden;">
+        <div id="coach-assign-content" style="flex:1;overflow-y:auto;padding:4px 20px 20px;scrollbar-width:none;-webkit-overflow-scrolling:touch;"></div>
+        <div id="coach-assign-footer" style="flex-shrink:0;padding:10px 20px 20px;background:#090909;border-top:1px solid rgba(255,255,255,0.05);"></div>
+      </div><!-- end coach-assign -->
+
+      <!-- ==================== SCREEN: COACH CHAT ==================== -->
+      <div class="screen" id="screen-coach-chat" style="display:flex;flex-direction:column;overflow:hidden;">
+        <div id="coach-chat-header" style="flex-shrink:0;"></div>
+        <div id="coach-chat-pinned" style="flex-shrink:0;"></div>
+        <div id="coach-chat-messages" style="flex:1;overflow-y:auto;padding:10px 16px 8px;display:flex;flex-direction:column;gap:11px;scrollbar-width:none;min-height:0;"></div>
+        <div id="coach-chat-input" style="flex-shrink:0;padding:10px 14px 14px;background:#090909;border-top:1px solid rgba(255,255,255,0.055);"></div>
+      </div><!-- end coach-chat -->
+
+      <!-- ==================== SCREEN: COACH PLAN EDITOR ==================== -->
+      <div class="screen" id="screen-coach-plan-editor" style="display:flex;flex-direction:column;overflow:hidden;">
+        <div id="coach-plan-editor-content" style="flex:1;overflow-y:auto;padding:4px 20px 0;scrollbar-width:none;-webkit-overflow-scrolling:touch;"></div>
+        <div id="coach-plan-editor-footer" style="flex-shrink:0;padding:12px 20px 28px;border-top:1px solid rgba(255,255,255,0.055);background:#090909;"></div>
+      </div><!-- end coach-plan-editor -->
+
     </div><!-- end screen-container -->
 
-    <!-- Tab Bar -->
-    <div class="tab-bar" id="tabBar">
-      <div class="tab-item active" id="tab-home" onclick="navigate('home')">
-        <div class="tab-icon-wrap"><i data-lucide="home" style="width:21px;height:21px;"></i></div>
-        <span class="tab-lbl">Home</span>
-      </div>
-      <div class="tab-item" id="tab-workout" onclick="navigate('workout')">
-        <div class="tab-icon-wrap"><i data-lucide="dumbbell" style="width:21px;height:21px;"></i></div>
-        <span class="tab-lbl">Workout</span>
-      </div>
-      <div class="tab-item" id="tab-progress" onclick="navigate('home')">
-        <div class="tab-icon-wrap"><i data-lucide="bar-chart-2" style="width:21px;height:21px;"></i></div>
-        <span class="tab-lbl">Progress</span>
-      </div>
-      <div class="tab-item" id="tab-feedback" onclick="navigate('feedback')" style="position:relative;">
-        <div class="tab-icon-wrap" style="position:relative;">
-          <i data-lucide="message-circle" style="width:21px;height:21px;"></i>
-          <div class="notif-dot" id="notif-dot"></div>
-        </div>
-        <span class="tab-lbl">Chat</span>
-      </div>
-    </div>
+    <!-- Tab Bar (populated by renderTabBar(role)) -->
+    <div class="tab-bar" id="tabBar" style="display:none;"></div>
 
     <!-- Home indicator -->
     <div class="home-ind">
@@ -815,12 +1062,21 @@ body {
 <script>
 // ─── DATA ────────────────────────────────────────────────
 const EXERCISES = [
-  { id:1, name:"Bench Press",            muscle:"Chest",     badge:"badge-chest",     sets:4, reps:8,  rest:"90s" },
-  { id:2, name:"Incline Dumbbell Press", muscle:"Chest",     badge:"badge-chest",     sets:3, reps:10, rest:"60s" },
-  { id:3, name:"Cable Fly",             muscle:"Chest",     badge:"badge-chest",     sets:3, reps:12, rest:"45s" },
-  { id:4, name:"Overhead Press",        muscle:"Shoulders", badge:"badge-shoulders", sets:4, reps:8,  rest:"90s" },
-  { id:5, name:"Lateral Raises",        muscle:"Shoulders", badge:"badge-shoulders", sets:3, reps:15, rest:"30s" },
-  { id:6, name:"Tricep Pushdown",       muscle:"Triceps",   badge:"badge-triceps",   sets:3, reps:12, rest:"45s" },
+  { id:1,  name:"Bench Press",            muscle:"Chest",     badge:"badge-chest",     sets:4, reps:8,  rest:"90s"  },
+  { id:2,  name:"Incline Dumbbell Press", muscle:"Chest",     badge:"badge-chest",     sets:3, reps:10, rest:"60s"  },
+  { id:3,  name:"Cable Fly",              muscle:"Chest",     badge:"badge-chest",     sets:3, reps:12, rest:"45s"  },
+  { id:4,  name:"Overhead Press",         muscle:"Shoulders", badge:"badge-shoulders", sets:4, reps:8,  rest:"90s"  },
+  { id:5,  name:"Lateral Raises",         muscle:"Shoulders", badge:"badge-shoulders", sets:3, reps:15, rest:"30s"  },
+  { id:6,  name:"Tricep Pushdown",        muscle:"Triceps",   badge:"badge-triceps",   sets:3, reps:12, rest:"45s"  },
+  { id:7,  name:"Pull-ups",               muscle:"Back",      badge:"badge-back",      sets:3, reps:8,  rest:"90s"  },
+  { id:8,  name:"Barbell Row",            muscle:"Back",      badge:"badge-back",      sets:4, reps:8,  rest:"90s"  },
+  { id:9,  name:"Lat Pulldown",           muscle:"Back",      badge:"badge-back",      sets:3, reps:10, rest:"60s"  },
+  { id:10, name:"Barbell Curl",           muscle:"Biceps",    badge:"badge-biceps",    sets:3, reps:10, rest:"60s"  },
+  { id:11, name:"Hammer Curl",            muscle:"Biceps",    badge:"badge-biceps",    sets:3, reps:12, rest:"45s"  },
+  { id:12, name:"Squat",                  muscle:"Legs",      badge:"badge-legs",      sets:4, reps:6,  rest:"120s" },
+  { id:13, name:"Leg Press",              muscle:"Legs",      badge:"badge-legs",      sets:3, reps:10, rest:"90s"  },
+  { id:14, name:"Romanian Deadlift",      muscle:"Legs",      badge:"badge-legs",      sets:3, reps:10, rest:"90s"  },
+  { id:15, name:"Plank",                  muscle:"Core",      badge:"badge-core",      sets:3, reps:60, rest:"30s"  },
 ];
 
 const INSTRUCTIONS = {
@@ -830,6 +1086,15 @@ const INSTRUCTIONS = {
   4: ["Stand feet shoulder-width. Bar sits on upper chest at shoulder level, elbows slightly forward.", "Brace core and glutes. Press bar straight overhead in one explosive motion.", "Fully lock out elbows at top, bar positioned over base of skull.", "Lower under control to starting position. Reset, then repeat."],
   5: ["Stand with micro-bend in knees, dumbbells at sides, palms facing inward.", "Raise arms out to sides leading with pinky finger, reaching shoulder height.", "Pause 1 second at top. Lower over 3 full seconds — no swinging.", "Tip: lighter weight with strict form beats heavy with momentum every time."],
   6: ["Attach rope to high cable. Grip each end with overhand grip, elbows pinned to sides.", "Starting position: elbows bent 90°, forearms parallel to floor.", "Drive rope down and split at bottom — elbows fully locked, hands at hips.", "Return slowly to 90° start. Elbows must not move forward at any point."],
+  7: ["Hang from bar with overhand grip, hands shoulder-width apart.", "Engage lats and pull chest toward bar in a controlled motion.", "Pause at top — chin over bar, elbows fully bent.", "Lower slowly to full hang before next rep."],
+  8: ["Load barbell, hinge at hips, back flat, bar below knees.", "Pull bar to lower chest driving elbows past torso.", "Squeeze scapulas at top for one second.", "Lower under control — no jerking, keep spine neutral."],
+  9: ["Sit at machine, grab bar with overhand wide grip.", "Pull bar down to upper chest, elbows pointing down and back.", "Hold contraction 1 second, then return slowly.", "Keep chest up and avoid leaning too far back."],
+  10: ["Stand with barbell, underhand grip, hands shoulder-width.", "Curl bar up keeping elbows pinned to sides.", "Squeeze biceps hard at the top.", "Lower slowly over 3 seconds for max hypertrophy."],
+  11: ["Hold dumbbells with neutral grip (palms facing each other).", "Curl both arms simultaneously, keeping elbows stationary.", "Control the descent — don't let gravity do the work.", "Great for brachialis thickness and forearm development."],
+  12: ["Bar on upper traps, feet shoulder-width, toes slightly out.", "Descend until thighs are parallel to floor, knees tracking toes.", "Drive through heels, extend hips and knees together.", "Keep core braced and chest up throughout entire rep."],
+  13: ["Set seat and back pad. Feet flat on platform, shoulder-width.", "Lower weight slowly until knees reach 90°.", "Press through full foot — do not let heels lift.", "Extend legs fully without locking out the knees."],
+  14: ["Hold barbell at hip level, slight knee bend, back flat.", "Hinge at hips, lower bar along shins feeling hamstring stretch.", "Return to standing by driving hips forward, not rounding back.", "Focus on hamstring tension — this is a hinge, not a squat."],
+  15: ["Get into forearm plank position, body in a straight line.", "Brace core as if about to be punched — do not hold breath.", "Hold for target time. If form breaks, stop and rest.", "Reps field = seconds held per set."],
 };
 
 const COACH_NOTES = {
@@ -839,6 +1104,15 @@ const COACH_NOTES = {
   4: "Last session your elbows were flaring wide at the start. Keep them at a 45° angle to your torso on the way up — your rotator cuffs will thank you. Film this one for me.",
   5: "Add the 2.5kg dumbbells today. Film your last set — I want to check your elbow bend. Lateral raises are 80% feel, 20% weight. Chase the burn, not the number.",
   6: "Split the rope apart at the very bottom and hold for a full second. You're skipping that contraction and leaving gains on the table. Slow down and feel every rep.",
+  7: "Control the negative — 3 seconds down. Most people rush pull-ups and miss half the stimulus. Grip width affects muscle involvement: wider hits lats more.",
+  8: "Drive elbows back, not just up. Think about pulling your elbows into your back pockets. You're not rowing a boat — initiate with your back, finish with your arms.",
+  9: "Don't lean too far back — that turns a back exercise into a biceps one. Keep your torso around 30° and feel the lats doing the work. Slow the return phase.",
+  10: "Stop cheating reps by swinging your torso. Pin elbows to sides and do not let them drift forward. If you can't lift without momentum, drop 5kg and add reps.",
+  11: "Neutral grip hits the brachialis more than the biceps. That thick muscle under your biceps is what adds real arm width. Don't rush these — feel the squeeze.",
+  12: "Depth matters. Parallel or just below. Record your last set — your heels are coming up on heavy sets, which puts stress on your knees. Fix the mobility first.",
+  13: "Do not go all the way down to full knee flexion — stop at 90°. Load position at the end of squat range is risky. Controlled, full range above parallel only.",
+  14: "Your lower back rounds at the bottom. Stop the bar just below the knee for now until hamstring mobility improves. Neutral spine is non-negotiable here.",
+  15: "Quality over time. A 30-second plank with perfect form beats a 2-minute plank with a sagging lower back. Breathe steadily — do not hold your breath.",
 };
 
 const INITIAL_MESSAGES = [
@@ -856,10 +1130,56 @@ const COACH_REPLIES = [
   "Love the commitment. Rest well tonight, recovery is training too.",
 ];
 
+// ─── COACH DATA ──────────────────────────────────────────
+const ATHLETES = [
+  { id:1, name:'Alex Carter',  initials:'AC', gradient:'linear-gradient(135deg,#C8FF00 0%,#7ab800 100%)', textColor:'#000', plan:'Upper Body – Day 3', progress:3, total:5, status:'active', alert:null },
+  { id:2, name:'Sara Bianchi', initials:'SB', gradient:'linear-gradient(135deg,#f472b6,#db2777)',           textColor:'white', plan:'Lower Body – Day 2', progress:5, total:5, status:'done',   alert:null },
+  { id:3, name:'Luca Ferro',   initials:'LF', gradient:'linear-gradient(135deg,#60a5fa,#2563eb)',           textColor:'white', plan:'Full Body – Day 1',  progress:0, total:5, status:'idle',   alert:'Needs feedback' },
+];
+
+const WORKOUT_TEMPLATES = [
+  { id:1, name:'Upper Body Power',       days:'Lun · Mer · Ven', exerciseIds:[1,2,4,5,6,8],    level:'Advanced',     badge:'badge-advanced' },
+  { id:2, name:'Lower Body Hypertrophy', days:'Mar · Gio',        exerciseIds:[12,13,14,10,15], level:'Intermediate', badge:'badge-intermediate' },
+  { id:3, name:'Full Body Beginner',     days:'Lun · Mer · Ven', exerciseIds:[1,4,12,15],       level:'Beginner',     badge:'badge-beginner' },
+];
+
+const COACH_CHAT_INIT = {
+  1: [
+    { from:'coach',   text:"Ottima sessione ieri Alex! La tua forma sul bench press sta migliorando. Prova ad aggiungere 2.5kg 💪", time:"Ieri · 18:30" },
+    { from:'athlete', text:"Grazie Coach! Mi sono sentito molto più forte sulle ultime serie 🙌", time:"Ieri · 19:15" },
+    { from:'coach',   text:"Perfetto. Filma l'ultima serie di OHP così controllo la posizione dei gomiti.", time:"Ieri · 19:18" },
+  ],
+  2: [
+    { from:'coach',   text:"Sara, ottimo lavoro oggi. Tutti gli esercizi completati — bravissima!", time:"Oggi · 10:00" },
+    { from:'athlete', text:"Mi sono sentita benissimo! Pronta per la prossima progressione 🙌", time:"Oggi · 10:30" },
+  ],
+  3: [
+    { from:'coach',   text:"Luca, ho notato che hai saltato la sessione questa settimana. Tutto ok?", time:"Ieri · 15:00" },
+  ],
+};
+
+const ATHLETE_REPLIES = [
+  "Capito Coach, grazie! 💪",
+  "Perfetto, lo faccio alla prossima sessione.",
+  "Ok! A domani 🙌",
+  "Lo filmo e te lo mando.",
+  "Sessione fantastica oggi!",
+];
+
 // ─── STATE ───────────────────────────────────────────────
-let currentScreen = 'home';
+let currentScreen = 'login';
+let currentRole   = null;          // 'athlete' | 'coach'
+let selectedAthleteId  = 1;
+let selectedTemplateId = null;
+let coachChatMessages  = {};       // populated on first coach login
+let coachNotes         = {};       // { athleteId: noteText }
+
 let completedExercises = new Set();
 let selectedExId = 1;
+let editingPlanId  = null;   // null = create, number = edit
+let _edDays        = [];
+let _edLevel       = 'Beginner';
+let _edExIds       = [];
 let chatMessages = [...INITIAL_MESSAGES];
 let isPlaying = false;
 let vidProgress = 0;
@@ -885,6 +1205,7 @@ function navigate(screen, exId) {
 
   const from = document.getElementById(`screen-${currentScreen}`);
   const to   = document.getElementById(`screen-${screen}`);
+  if (!from || !to) return;
 
   from.classList.remove('active');
   from.classList.add('slide-out');
@@ -893,16 +1214,16 @@ function navigate(screen, exId) {
     from.classList.remove('slide-out');
     to.classList.add('active');
 
-    // Tab bar
+    // Tab bar visibility
     const tb = document.getElementById('tabBar');
-    tb.style.display = screen === 'exercise' ? 'none' : 'flex';
+    const hideTab = ['login','exercise','coach-athlete','coach-assign','coach-chat','coach-plan-editor'].includes(screen);
+    tb.style.display = hideTab ? 'none' : 'flex';
 
-    // Active tab highlight
-    ['home','workout','progress','feedback'].forEach(t => {
-      const el = document.getElementById(`tab-${t}`);
-      if (el) el.classList.remove('active');
-    });
-    const activeTab = document.getElementById(`tab-${screen}`);
+    // Active tab highlight mappings
+    const tabScreenMap = { 'coach-athlete': 'coach-home', 'coach-assign': 'coach-plans', 'coach-chat': 'coach-home', 'coach-plan-editor': 'coach-plans' };
+    const tabTarget = tabScreenMap[screen] || screen;
+    document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
+    const activeTab = document.getElementById(`tab-${tabTarget}`);
     if (activeTab) activeTab.classList.add('active');
 
     // Clean up exercise timer if leaving exercise screen
@@ -912,9 +1233,15 @@ function navigate(screen, exId) {
 
     currentScreen = screen;
 
-    if (screen === 'exercise') { renderExerciseDetail(); stopVideo(); }
-    if (screen === 'workout')  { renderExerciseList(); }
-    if (screen === 'feedback') { renderChat(); scrollChat(); }
+    if (screen === 'exercise')      { renderExerciseDetail(); stopVideo(); }
+    if (screen === 'workout')       { renderExerciseList(); }
+    if (screen === 'feedback')      { renderChat(); scrollChat(); }
+    if (screen === 'coach-home')    { renderCoachHome(); }
+    if (screen === 'coach-athlete') { renderCoachAthlete(); }
+    if (screen === 'coach-plans')   { renderCoachPlans(); }
+    if (screen === 'coach-assign')       { renderCoachAssign(); }
+    if (screen === 'coach-chat')         { renderCoachChat(); scrollCoachChat(); }
+    if (screen === 'coach-plan-editor')  { renderPlanEditor(); }
 
     lucide.createIcons();
   }, 160);
@@ -1425,22 +1752,709 @@ function showCompletion() {
   document.querySelector('.phone-screen').appendChild(overlay);
 }
 
+// ─── ROLE / TAB BAR ─────────────────────────────────────
+function setRole(role) {
+  currentRole = role;
+  if (role === 'coach') {
+    coachChatMessages = JSON.parse(JSON.stringify(COACH_CHAT_INIT));
+  }
+  renderTabBar(role);
+  navigate(role === 'athlete' ? 'home' : 'coach-home');
+}
+
+function renderTabBar(role) {
+  const tb = document.getElementById('tabBar');
+  if (role === 'athlete') {
+    tb.innerHTML = `
+      <div class="tab-item" id="tab-home" onclick="navigate('home')">
+        <div class="tab-icon-wrap"><i data-lucide="home" style="width:21px;height:21px;"></i></div>
+        <span class="tab-lbl">Home</span>
+      </div>
+      <div class="tab-item" id="tab-workout" onclick="navigate('workout')">
+        <div class="tab-icon-wrap"><i data-lucide="dumbbell" style="width:21px;height:21px;"></i></div>
+        <span class="tab-lbl">Workout</span>
+      </div>
+      <div class="tab-item" id="tab-progress" onclick="navigate('home')">
+        <div class="tab-icon-wrap"><i data-lucide="bar-chart-2" style="width:21px;height:21px;"></i></div>
+        <span class="tab-lbl">Progress</span>
+      </div>
+      <div class="tab-item" id="tab-feedback" onclick="navigate('feedback')" style="position:relative;">
+        <div class="tab-icon-wrap" style="position:relative;">
+          <i data-lucide="message-circle" style="width:21px;height:21px;"></i>
+          <div class="notif-dot" id="notif-dot"></div>
+        </div>
+        <span class="tab-lbl">Chat</span>
+      </div>`;
+  } else {
+    tb.innerHTML = `
+      <div class="tab-item" id="tab-coach-home" onclick="navigate('coach-home')">
+        <div class="tab-icon-wrap"><i data-lucide="users" style="width:21px;height:21px;"></i></div>
+        <span class="tab-lbl">Atleti</span>
+      </div>
+      <div class="tab-item" id="tab-coach-plans" onclick="navigate('coach-plans')">
+        <div class="tab-icon-wrap"><i data-lucide="layout-list" style="width:21px;height:21px;"></i></div>
+        <span class="tab-lbl">Piani</span>
+      </div>`;
+  }
+  lucide.createIcons();
+}
+
+// ─── COACH SCREENS ───────────────────────────────────────
+function selectAthlete(id) {
+  selectedAthleteId = id;
+  navigate('coach-athlete');
+}
+
+function renderCoachHome() {
+  const container = document.getElementById('coach-home-content');
+  const activeCount = ATHLETES.filter(a => a.status === 'active').length;
+
+  container.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;">
+      <div>
+        <div style="color:rgba(255,255,255,0.38);font-size:12.5px;font-weight:500;margin-bottom:3px;">Buongiorno,</div>
+        <div style="color:white;font-size:22px;font-weight:800;letter-spacing:-0.6px;">Coach Marco 👋</div>
+      </div>
+      <div style="position:relative;">
+        <div style="width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#1d4ed8);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:white;box-shadow:0 0 0 2.5px rgba(59,130,246,0.18);">M</div>
+        <div style="position:absolute;bottom:1px;right:1px;width:11px;height:11px;background:#22c55e;border-radius:50%;border:2px solid #090909;"></div>
+      </div>
+    </div>
+
+    <div style="background:linear-gradient(140deg,#0d1520 0%,#0a0f18 100%);border:1px solid rgba(59,130,246,0.12);border-radius:18px;padding:16px 18px;margin-bottom:18px;display:flex;align-items:center;gap:14px;">
+      <div style="width:46px;height:46px;border-radius:14px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i data-lucide="users" style="color:#60a5fa;width:20px;height:20px;"></i>
+      </div>
+      <div style="flex:1;">
+        <div style="color:rgba(255,255,255,0.38);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;">Atleti oggi</div>
+        <div style="display:flex;align-items:baseline;gap:6px;">
+          <span style="color:white;font-size:24px;font-weight:900;">${activeCount}</span>
+          <span style="color:rgba(255,255,255,0.3);font-size:13px;">/ ${ATHLETES.length} attivi</span>
+        </div>
+      </div>
+      <div style="text-align:right;">
+        <div style="color:#C8FF00;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px;">Settimana</div>
+        <div style="color:white;font-size:18px;font-weight:800;">W12</div>
+      </div>
+    </div>
+
+    <div style="color:rgba(255,255,255,0.35);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:12px;">I tuoi Atleti</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      ${ATHLETES.map(a => {
+        const pct = a.total > 0 ? (a.progress / a.total * 100) : 0;
+        const sc  = a.status === 'active' ? 'status-active' : a.status === 'done' ? 'status-done' : 'status-idle';
+        const sl  = a.status === 'active' ? 'ACTIVE'        : a.status === 'done' ? 'DONE'        : 'IDLE';
+        return `
+        <div class="card" style="padding:15px 16px;cursor:pointer;" onclick="selectAthlete(${a.id})">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:44px;height:44px;border-radius:50%;background:${a.gradient};color:${a.textColor};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;">${a.initials}</div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+                <div style="color:white;font-size:14px;font-weight:700;">${a.name}</div>
+                <span class="${sc}">${sl}</span>
+              </div>
+              <div style="color:rgba(255,255,255,0.38);font-size:11.5px;margin-bottom:7px;">${a.plan}</div>
+              <div style="height:3.5px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;">
+                <div style="width:${pct}%;height:100%;background:${a.status==='done'?'rgba(255,255,255,0.22)':'#C8FF00'};border-radius:4px;"></div>
+              </div>
+              <div style="color:rgba(255,255,255,0.25);font-size:10.5px;margin-top:4px;">${a.progress}/${a.total} esercizi${a.alert ? ` &nbsp;·&nbsp; <span style="color:#fb923c;">${a.alert}</span>` : ''}</div>
+            </div>
+            <i data-lucide="chevron-right" style="color:rgba(255,255,255,0.2);width:16px;height:16px;flex-shrink:0;margin-left:4px;"></i>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  lucide.createIcons();
+}
+
+function renderCoachPlans() {
+  const container = document.getElementById('coach-plans-content');
+
+  container.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;">
+      <div>
+        <div style="color:rgba(255,255,255,0.38);font-size:12.5px;font-weight:500;margin-bottom:3px;">Gestione</div>
+        <div style="color:white;font-size:22px;font-weight:800;letter-spacing:-0.6px;">Piani di allenamento</div>
+      </div>
+      <div style="width:36px;height:36px;border-radius:50%;background:rgba(200,255,0,0.08);border:1px solid rgba(200,255,0,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="openCreatePlan()">
+        <i data-lucide="plus" style="color:#C8FF00;width:18px;height:18px;"></i>
+      </div>
+    </div>
+
+    <div style="color:rgba(255,255,255,0.35);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:12px;">${WORKOUT_TEMPLATES.length} piani disponibili</div>
+    <div style="display:flex;flex-direction:column;gap:12px;" id="plans-list">
+      ${WORKOUT_TEMPLATES.map(t => {
+        const assigned = ATHLETES.filter(a => a.plan.startsWith(t.name)).map(a => a.initials);
+        return `
+        <div class="card" style="padding:18px;" id="plan-card-${t.id}">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;">
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                <div style="color:white;font-size:15px;font-weight:800;">${t.name}</div>
+                <span class="${t.badge}">${t.level}</span>
+              </div>
+              <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                <div style="display:flex;align-items:center;gap:5px;">
+                  <i data-lucide="calendar" style="color:rgba(255,255,255,0.25);width:12px;height:12px;"></i>
+                  <span style="color:rgba(255,255,255,0.38);font-size:12px;">${t.days}</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:5px;">
+                  <i data-lucide="dumbbell" style="color:rgba(255,255,255,0.25);width:12px;height:12px;"></i>
+                  <span style="color:rgba(255,255,255,0.38);font-size:12px;">${t.exerciseIds.length} esercizi</span>
+                </div>
+              </div>
+            </div>
+            <button onclick="editPlan(${t.id})" style="width:32px;height:32px;border-radius:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.18s;" onmouseenter="this.style.background='rgba(255,255,255,0.1)'" onmouseleave="this.style.background='rgba(255,255,255,0.05)'">
+              <i data-lucide="pencil" style="color:rgba(255,255,255,0.4);width:13px;height:13px;"></i>
+            </button>
+          </div>
+
+          <!-- Assigned athletes -->
+          <div style="border-top:1px solid rgba(255,255,255,0.055);padding-top:12px;">
+            <div style="color:rgba(255,255,255,0.28);font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">Atleti assegnati</div>
+            ${assigned.length > 0
+              ? `<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+                  ${ATHLETES.filter(a => a.plan.startsWith(t.name)).map(a =>
+                    `<div style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.07);border-radius:20px;padding:4px 10px 4px 6px;">
+                      <div style="width:20px;height:20px;border-radius:50%;background:${a.gradient};color:${a.textColor};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:9px;flex-shrink:0;">${a.initials}</div>
+                      <span style="color:rgba(255,255,255,0.55);font-size:11.5px;font-weight:500;">${a.name.split(' ')[0]}</span>
+                    </div>`
+                  ).join('')}
+                 </div>`
+              : `<div style="color:rgba(255,255,255,0.2);font-size:12px;">Nessun atleta assegnato</div>`
+            }
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  lucide.createIcons();
+}
+
+const ALL_DAYS  = ['Lun','Mar','Mer','Gio','Ven','Sab','Dom'];
+const LEVEL_MAP = { 'Beginner':'badge-beginner', 'Intermediate':'badge-intermediate', 'Advanced':'badge-advanced' };
+const MUSCLE_ORDER = ['Chest','Shoulders','Triceps','Back','Biceps','Legs','Core'];
+
+function openCreatePlan() {
+  editingPlanId = null;
+  navigate('coach-plan-editor');
+}
+
+function editPlan(id) {
+  editingPlanId = id;
+  navigate('coach-plan-editor');
+}
+
+function renderPlanEditor() {
+  const isEdit = editingPlanId !== null;
+  const t = isEdit ? WORKOUT_TEMPLATES.find(x => x.id === editingPlanId) : null;
+
+  _edDays  = isEdit ? t.days.split(' · ') : [];
+  _edLevel = isEdit ? t.level : 'Beginner';
+  _edExIds = isEdit ? [...t.exerciseIds] : [];
+
+  // Group exercises by muscle group
+  const byMuscle = {};
+  MUSCLE_ORDER.forEach(m => byMuscle[m] = []);
+  EXERCISES.forEach(ex => { if (byMuscle[ex.muscle]) byMuscle[ex.muscle].push(ex); });
+
+  const exCount = _edExIds.length;
+
+  document.getElementById('coach-plan-editor-content').innerHTML = `
+    <!-- Back header -->
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:22px;">
+      <button onclick="navigate('coach-plans')" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.06);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i data-lucide="chevron-left" style="color:white;width:18px;height:18px;"></i>
+      </button>
+      <div>
+        <div style="color:rgba(255,255,255,0.38);font-size:11px;font-weight:600;margin-bottom:2px;">${isEdit ? 'Modifica' : 'Nuovo'}</div>
+        <div style="color:white;font-size:18px;font-weight:800;letter-spacing:-0.4px;">${isEdit ? t.name : 'Piano di allenamento'}</div>
+      </div>
+    </div>
+
+    <!-- DETTAGLI SECTION -->
+    <div style="color:rgba(255,255,255,0.35);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:14px;">Dettagli</div>
+
+    <div class="edit-label">Nome piano</div>
+    <input class="edit-input" id="ed-plan-name" value="${isEdit ? t.name : ''}" placeholder="es. Upper Body Strength" style="margin-bottom:18px;" />
+
+    <div class="edit-label">Giorni di allenamento</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;">
+      ${ALL_DAYS.map(d => `<div class="day-chip${_edDays.includes(d)?' sel':''}" onclick="toggleEdDay('${d}')" id="edday-${d}">${d}</div>`).join('')}
+    </div>
+
+    <div class="edit-label">Livello</div>
+    <div style="display:flex;gap:8px;margin-bottom:24px;">
+      ${['Beginner','Intermediate','Advanced'].map(l =>
+        `<div class="level-pill${_edLevel===l?' sel':''}" onclick="selectEdLevel('${l}')" id="edlvl-${l}">${l}</div>`
+      ).join('')}
+    </div>
+
+    <!-- ESERCIZI SECTION -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <div style="color:rgba(255,255,255,0.35);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;">Esercizi</div>
+      <div style="color:#C8FF00;font-size:11.5px;font-weight:700;" id="ed-ex-count">${exCount} selezionati</div>
+    </div>
+
+    ${MUSCLE_ORDER.map(muscle => {
+      const exs = byMuscle[muscle];
+      if (!exs.length) return '';
+      return `
+        <div style="color:rgba(255,255,255,0.22);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;margin-top:6px;">${muscle}</div>
+        ${exs.map(ex => {
+          const sel = _edExIds.includes(ex.id);
+          return `
+          <div class="plan-ex-row${sel?' sel':''}" id="pedrow-${ex.id}" onclick="togglePlanEx(${ex.id})">
+            <div class="plan-ex-cb" id="pedcb-${ex.id}">
+              ${sel ? `<svg width="11" height="9" viewBox="0 0 14 11" fill="none"><polyline points="1 5 5 9 13 1" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>` : ''}
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:7px;margin-bottom:3px;">
+                <span style="color:white;font-size:13px;font-weight:650;">${ex.name}</span>
+                <span class="${ex.badge}">${ex.muscle}</span>
+              </div>
+              <div style="color:rgba(255,255,255,0.32);font-size:11.5px;">${ex.sets}×${ex.reps} &nbsp;·&nbsp; Rest ${ex.rest}</div>
+            </div>
+          </div>`;
+        }).join('')}
+      `;
+    }).join('')}
+
+    <div style="height:8px;"></div>`;
+
+  document.getElementById('coach-plan-editor-footer').innerHTML = `
+    <div class="cta-btn" onclick="savePlan()">
+      <i data-lucide="${isEdit ? 'check' : 'plus'}" style="width:15px;height:15px;"></i>
+      ${isEdit ? 'Salva modifiche' : 'Crea piano'}
+    </div>`;
+
+  lucide.createIcons();
+}
+
+function toggleEdDay(d) {
+  const idx = _edDays.indexOf(d);
+  if (idx > -1) _edDays.splice(idx, 1); else _edDays.push(d);
+  document.getElementById(`edday-${d}`)?.classList.toggle('sel', _edDays.includes(d));
+}
+
+function selectEdLevel(l) {
+  _edLevel = l;
+  document.querySelectorAll('.level-pill').forEach(el => el.classList.remove('sel'));
+  document.getElementById(`edlvl-${l}`)?.classList.add('sel');
+}
+
+function togglePlanEx(exId) {
+  const idx = _edExIds.indexOf(exId);
+  if (idx > -1) _edExIds.splice(idx, 1); else _edExIds.push(exId);
+  const sel = _edExIds.includes(exId);
+  const row = document.getElementById(`pedrow-${exId}`);
+  const cb  = document.getElementById(`pedcb-${exId}`);
+  if (row) row.classList.toggle('sel', sel);
+  if (cb)  cb.innerHTML = sel ? `<svg width="11" height="9" viewBox="0 0 14 11" fill="none"><polyline points="1 5 5 9 13 1" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>` : '';
+  const counter = document.getElementById('ed-ex-count');
+  if (counter) counter.textContent = `${_edExIds.length} selezionati`;
+}
+
+function savePlan() {
+  const nameEl = document.getElementById('ed-plan-name');
+  if (!nameEl) return;
+  const newName = nameEl.value.trim();
+  if (!newName)          { showToast('Inserisci il nome del piano ⚠️'); return; }
+  if (_edDays.length === 0) { showToast('Seleziona almeno un giorno ⚠️'); return; }
+  if (_edExIds.length === 0){ showToast('Aggiungi almeno un esercizio ⚠️'); return; }
+
+  const orderedDays = ALL_DAYS.filter(d => _edDays.includes(d));
+
+  if (editingPlanId !== null) {
+    const t = WORKOUT_TEMPLATES.find(x => x.id === editingPlanId);
+    if (t) {
+      t.name        = newName;
+      t.days        = orderedDays.join(' · ');
+      t.exerciseIds = [..._edExIds];
+      t.level       = _edLevel;
+      t.badge       = LEVEL_MAP[_edLevel];
+    }
+    showToast('Piano aggiornato ✓');
+  } else {
+    WORKOUT_TEMPLATES.push({
+      id:          Date.now(),
+      name:        newName,
+      days:        orderedDays.join(' · '),
+      exerciseIds: [..._edExIds],
+      level:       _edLevel,
+      badge:       LEVEL_MAP[_edLevel],
+    });
+    showToast('Piano creato ✓');
+  }
+
+  navigate('coach-plans');
+}
+
+function renderCoachAthlete() {
+  const a = ATHLETES.find(x => x.id === selectedAthleteId);
+  if (!a) return;
+
+  const pct  = a.total > 0 ? (a.progress / a.total * 100) : 0;
+  const circ = +(2 * Math.PI * 28).toFixed(1);
+  const off  = +(circ * (1 - pct / 100)).toFixed(1);
+  const savedNote = coachNotes[a.id] || '';
+
+  document.getElementById('coach-athlete-content').innerHTML = `
+    <div style="padding:4px 20px 16px;">
+      <!-- Back header -->
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+        <button onclick="navigate('coach-home')" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.06);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i data-lucide="chevron-left" style="color:white;width:18px;height:18px;"></i>
+        </button>
+        <div style="flex:1;">
+          <div style="color:white;font-size:16px;font-weight:800;">${a.name}</div>
+          <div style="color:rgba(255,255,255,0.35);font-size:11.5px;">${a.plan}</div>
+        </div>
+        <div style="width:40px;height:40px;border-radius:50%;background:${a.gradient};color:${a.textColor};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0;">${a.initials}</div>
+      </div>
+
+      <!-- Progress ring + stats -->
+      <div style="background:#131313;border:1px solid rgba(255,255,255,0.058);border-radius:20px;padding:20px;margin-bottom:14px;display:flex;align-items:center;gap:18px;">
+        <div style="position:relative;width:80px;height:80px;flex-shrink:0;">
+          <svg width="80" height="80" viewBox="0 0 80 80">
+            <circle cx="40" cy="40" r="28" fill="none" stroke="rgba(255,255,255,0.055)" stroke-width="6"/>
+            <circle cx="40" cy="40" r="28" fill="none" stroke="#C8FF00" stroke-width="6"
+              stroke-dasharray="${circ}" stroke-dashoffset="${off}"
+              stroke-linecap="round" class="ring-arc"/>
+          </svg>
+          <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+            <div style="color:white;font-size:20px;font-weight:900;line-height:1;">${a.progress}</div>
+            <div style="color:rgba(255,255,255,0.3);font-size:10px;">/${a.total}</div>
+          </div>
+        </div>
+        <div style="flex:1;">
+          <div style="color:rgba(255,255,255,0.38);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Sessione odierna</div>
+          <div style="color:white;font-size:15px;font-weight:700;margin-bottom:4px;">${a.plan}</div>
+          <div style="color:rgba(255,255,255,0.35);font-size:12px;">${a.progress} di ${a.total} esercizi completati</div>
+          <div style="height:3.5px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;margin-top:10px;">
+            <div style="width:${pct}%;height:100%;background:#C8FF00;border-radius:4px;transition:width 0.5s;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Exercise list (read-only) -->
+      <div style="margin-bottom:14px;">
+        <div style="color:rgba(255,255,255,0.35);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:10px;">Esercizi workout</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          ${EXERCISES.map((ex, i) => {
+            const done = i < a.progress;
+            return `
+            <div style="background:#131313;border:1px solid rgba(255,255,255,0.05);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:11px;opacity:${done?'0.55':'1'};">
+              <div style="width:22px;height:22px;border-radius:50%;background:${done?'#C8FF00':'rgba(255,255,255,0.05)'};border:${done?'none':'1.5px solid rgba(255,255,255,0.1)'};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                ${done ? '<svg width="9" height="7" viewBox="0 0 14 11" fill="none"><polyline points="1 5 5 9 13 1" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' : ''}
+              </div>
+              <div style="flex:1;min-width:0;">
+                <div style="color:${done?'rgba(255,255,255,0.3)':'white'};font-size:13.5px;font-weight:600;${done?'text-decoration:line-through;':''}">${ex.name}</div>
+                <div style="color:rgba(255,255,255,0.28);font-size:11px;margin-top:2px;">${ex.sets}×${ex.reps} &nbsp;·&nbsp; Rest ${ex.rest}</div>
+              </div>
+              <span class="${ex.badge}">${ex.muscle}</span>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+
+      <!-- Coach note -->
+      <div style="margin-bottom:6px;">
+        <div style="color:rgba(255,255,255,0.35);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:10px;">Nota per l'atleta</div>
+        <div class="card" style="padding:14px;">
+          <textarea id="coach-note-input"
+            placeholder="Aggiungi una nota per ${a.name}..."
+            style="width:100%;background:transparent;border:none;outline:none;color:rgba(255,255,255,0.75);font-size:13px;line-height:1.65;font-family:'Inter',sans-serif;resize:none;min-height:80px;"
+            oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';"
+          >${savedNote}</textarea>
+        </div>
+      </div>
+    </div>`;
+
+  document.getElementById('coach-athlete-footer').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:9px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;">
+        <div class="cta-btn" style="border-radius:13px;padding:13px;font-size:13px;background:#C8FF00;" onclick="saveCoachNote()">
+          <i data-lucide="save" style="width:14px;height:14px;"></i>
+          Salva nota
+        </div>
+        <div class="cta-btn" style="border-radius:13px;padding:13px;font-size:13px;background:rgba(59,130,246,0.12);color:#60a5fa;border:1px solid rgba(59,130,246,0.2);" onclick="navigate('coach-chat')">
+          <i data-lucide="message-circle" style="width:14px;height:14px;"></i>
+          Apri Chat
+        </div>
+      </div>
+      <div class="cta-btn" style="border-radius:13px;padding:13px;font-size:13px;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.08);" onclick="navigate('coach-assign')">
+        <i data-lucide="calendar-plus" style="width:14px;height:14px;"></i>
+        Cambia Piano
+      </div>
+    </div>`;
+  lucide.createIcons();
+}
+
+function saveCoachNote() {
+  const input = document.getElementById('coach-note-input');
+  if (!input) return;
+  coachNotes[selectedAthleteId] = input.value;
+  showToast('Nota salvata ✓');
+}
+
+function renderCoachAssign() {
+  const a = ATHLETES.find(x => x.id === selectedAthleteId);
+
+  document.getElementById('coach-assign-content').innerHTML = `
+    <!-- Back header -->
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+      <button onclick="navigate('coach-athlete')" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.06);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i data-lucide="chevron-left" style="color:white;width:18px;height:18px;"></i>
+      </button>
+      <div>
+        <div style="color:white;font-size:15px;font-weight:800;">Assegna Piano</div>
+        <div style="color:rgba(255,255,255,0.35);font-size:11.5px;">a ${a ? a.name : 'Atleta'}</div>
+      </div>
+    </div>
+
+    <div style="color:rgba(255,255,255,0.35);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:12px;">Piani disponibili</div>
+    <div style="display:flex;flex-direction:column;gap:10px;" id="template-list">
+      ${WORKOUT_TEMPLATES.map(t => `
+      <div class="template-card${selectedTemplateId===t.id?' selected':''}" id="tmpl-${t.id}" onclick="selectTemplate(${t.id})">
+        <div class="template-radio"><div class="template-radio-dot"></div></div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+            <div style="color:white;font-size:14px;font-weight:700;">${t.name}</div>
+            <span class="${t.badge}">${t.level}</span>
+          </div>
+          <div style="display:flex;gap:12px;align-items:center;">
+            <div style="display:flex;align-items:center;gap:5px;">
+              <i data-lucide="calendar" style="color:rgba(255,255,255,0.28);width:12px;height:12px;"></i>
+              <span style="color:rgba(255,255,255,0.38);font-size:11.5px;">${t.days}</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:5px;">
+              <i data-lucide="dumbbell" style="color:rgba(255,255,255,0.28);width:12px;height:12px;"></i>
+              <span style="color:rgba(255,255,255,0.38);font-size:11.5px;">${t.exerciseIds.length} esercizi</span>
+            </div>
+          </div>
+        </div>
+      </div>`).join('')}
+    </div>`;
+
+  document.getElementById('coach-assign-footer').innerHTML = `
+    <div class="cta-btn" style="border-radius:14px;padding:14px;font-size:14px;" onclick="confirmAssign()">
+      <i data-lucide="check" style="width:15px;height:15px;"></i>
+      Conferma Assegnazione
+    </div>`;
+  lucide.createIcons();
+}
+
+function selectTemplate(id) {
+  selectedTemplateId = id;
+  document.querySelectorAll('.template-card').forEach(el => el.classList.remove('selected'));
+  const card = document.getElementById(`tmpl-${id}`);
+  if (card) card.classList.add('selected');
+}
+
+function confirmAssign() {
+  if (!selectedTemplateId) {
+    showToast('Seleziona un piano prima ⚠️'); return;
+  }
+  const t = WORKOUT_TEMPLATES.find(x => x.id === selectedTemplateId);
+  const a = ATHLETES.find(x => x.id === selectedAthleteId);
+  if (a && t) a.plan = t.name;
+  showToast('Piano assegnato! ✓');
+  setTimeout(() => navigate('coach-athlete'), 1200);
+}
+
+function renderCoachChat() {
+  const a = ATHLETES.find(x => x.id === selectedAthleteId);
+  if (!a) return;
+
+  const msgs = coachChatMessages[selectedAthleteId] || [];
+
+  // Header
+  document.getElementById('coach-chat-header').innerHTML = `
+    <div style="padding:6px 18px 12px;background:#090909;border-bottom:1px solid rgba(255,255,255,0.055);">
+      <div style="display:flex;align-items:center;gap:11px;">
+        <button onclick="navigate('coach-home')" style="width:32px;height:32px;border-radius:50%;background:transparent;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i data-lucide="chevron-left" style="color:rgba(255,255,255,0.55);width:18px;height:18px;"></i>
+        </button>
+        <div style="position:relative;flex-shrink:0;">
+          <div style="width:42px;height:42px;border-radius:50%;background:${a.gradient};color:${a.textColor};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;">${a.initials}</div>
+          <div class="online-dot" style="position:absolute;bottom:0;right:0;"></div>
+        </div>
+        <div style="flex:1;">
+          <div style="color:white;font-size:15px;font-weight:700;">${a.name}</div>
+          <div style="color:#22c55e;font-size:11px;font-weight:600;display:flex;align-items:center;gap:4px;margin-top:1px;">
+            <div style="width:5px;height:5px;background:#22c55e;border-radius:50%;"></div>
+            Online ora
+          </div>
+        </div>
+        <div style="display:flex;gap:14px;align-items:center;">
+          <i data-lucide="video" style="color:rgba(255,255,255,0.3);width:18px;height:18px;cursor:pointer;"></i>
+          <i data-lucide="phone" style="color:rgba(255,255,255,0.3);width:17px;height:17px;cursor:pointer;"></i>
+        </div>
+      </div>
+    </div>`;
+
+  // Pinned note
+  document.getElementById('coach-chat-pinned').innerHTML = `
+    <div style="padding:10px 16px 4px;">
+      <div class="pinned-note" style="padding:11px 13px;display:flex;align-items:flex-start;gap:9px;">
+        <i data-lucide="pin" style="color:#C8FF00;width:13px;height:13px;flex-shrink:0;margin-top:2px;"></i>
+        <div>
+          <div style="color:#C8FF00;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;">Sessione corrente</div>
+          <div style="color:rgba(255,255,255,0.65);font-size:12px;line-height:1.55;">${a.plan}</div>
+        </div>
+      </div>
+    </div>`;
+
+  // Input
+  document.getElementById('coach-chat-input').innerHTML = `
+    <div style="display:flex;gap:9px;align-items:center;">
+      <div style="flex:1;background:#161616;border:1px solid rgba(255,255,255,0.075);border-radius:26px;padding:11px 14px;display:flex;align-items:center;gap:8px;transition:border-color 0.2s;" id="coach-chat-wrap">
+        <input id="coach-msg-input" type="text" placeholder="Scrivi un messaggio..."
+          style="flex:1;background:transparent;border:none;outline:none;color:white;font-size:13.5px;font-family:'Inter',sans-serif;"
+          onfocus="document.getElementById('coach-chat-wrap').style.borderColor='rgba(59,130,246,0.4)'"
+          onblur="document.getElementById('coach-chat-wrap').style.borderColor='rgba(255,255,255,0.075)'"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();sendCoachMessage();}">
+        <i data-lucide="smile" style="color:rgba(255,255,255,0.22);width:15px;height:15px;cursor:pointer;flex-shrink:0;"></i>
+      </div>
+      <button onclick="sendCoachMessage()"
+        style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#1d4ed8);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.18s;"
+        onmousedown="this.style.transform='scale(0.9)'" onmouseup="this.style.transform='scale(1)'">
+        <i data-lucide="send" style="color:white;width:15px;height:15px;"></i>
+      </button>
+    </div>`;
+
+  renderCoachMessages();
+  lucide.createIcons();
+}
+
+function renderCoachMessages() {
+  const container = document.getElementById('coach-chat-messages');
+  if (!container) return;
+  container.innerHTML = '';
+  const msgs = coachChatMessages[selectedAthleteId] || [];
+  let lastDate = '';
+
+  msgs.forEach(msg => {
+    const date = (msg.time || '').split('·')[0].trim();
+    if (date && date !== lastDate) {
+      const sep = document.createElement('div');
+      sep.style.cssText = 'text-align:center;margin:4px 0 2px;';
+      sep.innerHTML = `<span style="color:rgba(255,255,255,0.2);font-size:10px;font-weight:500;background:#151515;border:1px solid rgba(255,255,255,0.05);padding:3px 12px;border-radius:20px;">${date}</span>`;
+      container.appendChild(sep);
+      lastDate = date;
+    }
+
+    const wrap = document.createElement('div');
+    const isCoach = msg.from === 'coach';
+    wrap.style.cssText = `display:flex;gap:8px;align-items:flex-end;${isCoach?'':'flex-direction:row-reverse;'}`;
+    const timeStr = (msg.time || '').split('·')[1]?.trim() || '';
+
+    if (isCoach) {
+      wrap.innerHTML = `
+        <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#1d4ed8);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:10px;color:white;flex-shrink:0;">M</div>
+        <div>
+          <div class="bubble-coach"><p style="color:white;font-size:13px;line-height:1.55;margin:0;">${msg.text}</p></div>
+          ${timeStr ? `<div style="color:rgba(255,255,255,0.2);font-size:9.5px;margin-top:4px;padding-left:3px;">${timeStr}</div>` : ''}
+        </div>`;
+    } else {
+      const a = ATHLETES.find(x => x.id === selectedAthleteId);
+      wrap.innerHTML = `
+        <div>
+          <div class="bubble-athlete"><p style="color:#000;font-size:13px;line-height:1.55;margin:0;font-weight:500;">${msg.text}</p></div>
+          ${timeStr ? `<div style="color:rgba(255,255,255,0.2);font-size:9.5px;margin-top:4px;text-align:right;padding-right:3px;">${timeStr}</div>` : ''}
+        </div>
+        ${a ? `<div style="width:26px;height:26px;border-radius:50%;background:${a.gradient};color:${a.textColor};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:10px;flex-shrink:0;">${a.initials}</div>` : ''}`;
+    }
+    container.appendChild(wrap);
+  });
+}
+
+function scrollCoachChat() {
+  setTimeout(() => {
+    const c = document.getElementById('coach-chat-messages');
+    if (c) c.scrollTop = c.scrollHeight;
+  }, 60);
+}
+
+function sendCoachMessage() {
+  const input = document.getElementById('coach-msg-input');
+  const text = input?.value.trim();
+  if (!text) return;
+
+  const now = new Date();
+  const hh = now.getHours(), mm = now.getMinutes().toString().padStart(2,'0');
+  const timeStr = `Oggi · ${hh}:${mm}`;
+
+  if (!coachChatMessages[selectedAthleteId]) coachChatMessages[selectedAthleteId] = [];
+  coachChatMessages[selectedAthleteId].push({ from:'coach', text, time:timeStr });
+  input.value = '';
+  renderCoachMessages();
+  scrollCoachChat();
+  lucide.createIcons();
+
+  // Simulate athlete reply
+  setTimeout(() => {
+    const c = document.getElementById('coach-chat-messages');
+    if (!c) return;
+    const a = ATHLETES.find(x => x.id === selectedAthleteId);
+    const typing = document.createElement('div');
+    typing.id = 'coach-typing-ind';
+    typing.style.cssText = 'display:flex;gap:8px;align-items:flex-end;flex-direction:row-reverse;';
+    typing.innerHTML = `
+      ${a ? `<div style="width:26px;height:26px;border-radius:50%;background:${a.gradient};color:${a.textColor};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:10px;flex-shrink:0;">${a.initials}</div>` : ''}
+      <div class="bubble-coach" style="padding:13px 16px;">
+        <div style="display:flex;gap:5px;align-items:center;">
+          <div style="width:6px;height:6px;background:rgba(255,255,255,0.38);border-radius:50%;" class="typing-dot"></div>
+          <div style="width:6px;height:6px;background:rgba(255,255,255,0.38);border-radius:50%;" class="typing-dot"></div>
+          <div style="width:6px;height:6px;background:rgba(255,255,255,0.38);border-radius:50%;" class="typing-dot"></div>
+        </div>
+      </div>`;
+    c.appendChild(typing);
+    scrollCoachChat();
+
+    setTimeout(() => {
+      const t = document.getElementById('coach-typing-ind');
+      if (t) t.remove();
+      const reply = ATHLETE_REPLIES[Math.floor(Math.random() * ATHLETE_REPLIES.length)];
+      coachChatMessages[selectedAthleteId].push({ from:'athlete', text:reply, time:`Oggi · ${hh}:${(now.getMinutes()+1).toString().padStart(2,'0')}` });
+      renderCoachMessages();
+      scrollCoachChat();
+      lucide.createIcons();
+    }, 1800);
+  }, 700);
+}
+
+// ─── TOAST ───────────────────────────────────────────────
+function showToast(msg) {
+  const existing = document.getElementById('app-toast');
+  if (existing) existing.remove();
+
+  const toast = document.createElement('div');
+  toast.id = 'app-toast';
+  toast.className = 'toast-msg';
+  toast.style.cssText = 'position:absolute;bottom:110px;left:50%;transform:translateX(-50%);background:#1e1e1e;border:1px solid rgba(255,255,255,0.1);border-radius:22px;padding:10px 18px;color:white;font-size:13px;font-weight:600;white-space:nowrap;z-index:999;font-family:"Inter",sans-serif;box-shadow:0 8px 32px rgba(0,0,0,0.5);';
+  toast.textContent = msg;
+  document.querySelector('.phone-screen').appendChild(toast);
+
+  setTimeout(() => {
+    toast.classList.add('hiding');
+    setTimeout(() => toast.remove(), 260);
+  }, 1800);
+}
+
 // ─── INIT ────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
   lucide.createIcons();
+  // Pre-populate hidden screens (no visual effect)
   renderExerciseList();
   renderChat();
-
-  // Animate progress ring on load
-  setTimeout(() => {
-    const ring = document.getElementById('homeRing');
-    if (ring) ring.style.strokeDashoffset = '70.4';
-  }, 600);
 });
 
 window.addEventListener('hashchange', () => {
-  const hash = location.hash.replace('#','') || 'home';
-  if (['home','workout','exercise','feedback'].includes(hash)) navigate(hash);
+  const hash = location.hash.replace('#','') || 'login';
+  const athleteScreens = ['home','workout','exercise','feedback'];
+  const coachScreens   = ['coach-home','coach-athlete','coach-plans','coach-assign','coach-chat'];
+  if (athleteScreens.includes(hash) || coachScreens.includes(hash)) navigate(hash);
 });
 </script>
 </body>
