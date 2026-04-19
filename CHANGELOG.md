@@ -1,5 +1,29 @@
 # APEX Training — Changelog
 
+## [1.3.0] — 2026-04-19
+
+### Added
+- **Multi-day workout plans** — plans now contain multiple configurable days, each with its own exercise sequence.
+- **Per-day exercise parameters** — every exercise inside a plan day can define its own sets, reps, and rest time.
+- **Athlete plan assignment state** — athletes now track `planId`, `currentDayIndex`, `completedExerciseIds`, and completed day history.
+- **Sequential day progression** — completing all exercises in the current day advances the athlete to the next plan day.
+- **Automatic cycle reset** — completing the final day of a plan resets the athlete back to Day 1 for the next cycle.
+- **Completed day history** — coach athlete detail now surfaces previously completed days.
+
+### Changed
+- Workout screen now renders only the exercises for the athlete's current plan day instead of the global exercise catalog.
+- Athlete home now reflects the assigned plan, current day, day progress, estimated duration, and plan day tracker.
+- Coach home and athlete detail now calculate progress from the assigned plan day instead of flat `progress` / `total` counters.
+- Plan assignment now replaces the previous plan, resets the athlete to Day 1, and clears current-day exercise completion.
+- Plan editor now works day-by-day: add/remove days, rename each day, add/remove exercises per day, and edit sets/reps per exercise.
+- Coach chat pinned session note now uses the athlete's current structured plan/day label.
+
+### Removed
+- Flat workout template model based on one `exerciseIds` array reused for every workout day.
+- Athlete plan strings and flat progress counters as the source of truth for assigned workout state.
+
+---
+
 ## [1.2.0] — 2026-04-19
 
 ### Added
